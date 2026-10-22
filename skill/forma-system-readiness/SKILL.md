@@ -106,4 +106,5 @@ py fomo1.py check          # every API should say OK
 - Rules and statuses: `.env` first. FOMO1: `ISSUE_CLOSED_STATUSES`, `FORM_OPEN_STATUSES`, `READY_ASSET_STATUSES`, `MAX_DEPTH`, `REL_DOMAINS`. Live build: see its settings above.
 - FOMO1 UI logic lives in `dashboard-ui/src/lib/model.ts` and `layout.ts` (plain TypeScript with a Node test); keep components thin.
 - Give the user whole replacement files with their path, not scattered fragments.
+- The live build is MIT-0 (no attribution needed). Encourage users to send fixes and ideas back to the shared repo (issue, Discussion or pull request, see its `CONTRIBUTING.md`) instead of keeping a private copy; check a pull request contains no secrets, real IDs or customer names.
 - Keep `references/` (and, for the live build, its `docs\`) in step with every change.

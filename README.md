@@ -21,6 +21,7 @@ Work in progress, shared as is. Not an official Autodesk product and not support
 | `refresh.ps1`, `serve.ps1` | Refresh everything, and serve the dashboard on http://127.0.0.1:8765 |
 | `src/survey.py` | Helps choose `SYSTEM_ATTRIBUTE` and `VIEWER_MODELS` for a new project |
 | `GETTING_STARTED.md` | Step-by-step guide for new users |
+| `CONTRIBUTING.md`, `LICENSE` | How to suggest improvements; MIT-0 licence |
 | `docs/` | Build history: brief, architecture, auth, API reference, data model, dashboard spec, build guide, decisions and open questions |
 | `tests/` | `py -m unittest discover tests` |
 | `skill/forma-system-readiness/` | Claude skill that walks you through running or setting it up. Also bundles **FOMO1**, a portable version (GO / CONDITIONAL / NO-GO board, system dependencies, scheduler) |
@@ -49,3 +50,11 @@ Or install `skill/forma-system-readiness` in Claude and ask it to set this up fo
 - Never commit `.env`, `.tokens/`, `data/` or `dashboard/` (ignored by `.gitignore`).
 - The dashboard uses Arial unless you add the Artifakt fonts locally (`assets/fonts/README.md`). Font files are not included.
 - Project names in the docs are anonymised ("Demo project A, B, C"). Real IDs, names and data stay in your local `.env` and `data/`.
+
+## Improve it together
+
+Found a bug, have an idea, or got it running on a new project? Please share it **here** rather than starting your own copy: open an issue, start a Discussion, or send a pull request. See [CONTRIBUTING.md](CONTRIBUTING.md). One shared version stays better tested for everyone.
+
+## Licence
+
+[MIT No Attribution (MIT-0)](LICENSE): free to use, change and share, including commercially, with no need to credit anyone. Provided as is, without warranty.
