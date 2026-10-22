@@ -1,0 +1,2 @@
+# No third-party packages: the project uses the Python standard library only.
+# pip downloads are blocked by the corporate network certificate (2026-10-21), see docs/08.

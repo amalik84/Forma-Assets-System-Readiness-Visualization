@@ -1,0 +1,13 @@
+.env
+.tokens/
+.venv/
+data/
+dashboard/
+logs/
+__pycache__/
+*.pyc
+
+# Local only
+CLAUDE.local.md
+# Brand fonts are not redistributed; add them locally (assets/fonts/README.md)
+assets/fonts/*.ttf

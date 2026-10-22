@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>System readiness</title>
+<style>
+  /* Fonts are copied next to this file by render.py. Arial is the sanctioned fallback. */
+  @font-face { font-family: "Artifakt Legend"; font-weight: 700; src: url("fonts/ArtifaktLegend-Bold.ttf"); }
+  @font-face { font-family: "Artifakt Element"; font-weight: 400; src: url("fonts/ArtifaktElement-Regular.ttf"); }
+  @font-face { font-family: "Artifakt Element"; font-weight: 600; src: url("fonts/ArtifaktElement-SemiBold.ttf"); }
+
+  :root {
+    /* Autodesk palette (Brand Hub, colour page). Tertiaries used for status only. */
+    --black: #000000; --white: #FFFFFF; --yellow: #FFFF00;
+    --warm-slate: #D5D5CB; --warm-slate-100: #F5F5F0; --warm-slate-300: #E4E4DB;
+    --slate: #666666; --slate-100: #E8E8E8; --slate-300: #A3A3A3;
+    --morning: #2AD0A9; --morning-100: #D5F6EE;
+    --dusk: #F2520A; --dusk-100: #FFDDCD;
+    --dawn: #F09D4F; --dawn-100: #FFE9C5;
+    --radius: 8px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Artifakt Element", Arial, sans-serif; font-size: 14px; color: var(--black);
+         background: var(--warm-slate-100); }
+  h1, h2, h3 { font-family: "Artifakt Legend", Arial, sans-serif; font-weight: 700; margin: 0; }
+  button { font: inherit; cursor: pointer; }
+
+  header { background: var(--black); color: var(--white); padding: 16px 24px; display: flex;
+           justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+  header h1 { font-size: 26px; }
+  header .sub { color: var(--warm-slate); margin-top: 4px; }
+  header .meta { text-align: right; color: var(--warm-slate); line-height: 1.6; }
+  .banner { padding: 12px 24px; background: var(--dawn-100); border-bottom: 1px solid var(--dawn); }
+
+  .tiles { display: grid; grid-template-columns: repeat(6, 1fr); background: var(--black); color: var(--white);
+           border-top: 1px solid var(--slate); }
+  .tile { padding: 12px 24px 16px; border-right: 1px solid var(--slate); }
+  .tile:last-child { border-right: none; }
+  .tile .n { font-family: "Artifakt Legend", Arial, sans-serif; font-size: 34px; font-weight: 700; line-height: 1.1; }
+  .tile .l { color: var(--warm-slate); }
+
+  .layout { display: grid; grid-template-columns: 300px minmax(0, 1fr) 340px; gap: 12px; padding: 12px 24px 16px;
+            align-items: start; }
+  .layout > .panel, .sidebar { height: 900px; }
+  .panel { background: var(--white); border-radius: var(--radius); display: flex; flex-direction: column; min-height: 0;
+           overflow: hidden; }
+  .panel > .head { padding: 12px 16px 10px; border-bottom: 1px solid var(--warm-slate); }
+  .panel > .head h2 { font-size: 16px; margin-bottom: 8px; }
+  .kicker { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--slate); }
+  .sidebar { display: grid; grid-template-rows: minmax(160px, 34%) minmax(0, 1fr); gap: 12px; min-height: 0; }
+  .center { display: grid; grid-template-rows: auto 640px; gap: 12px; min-height: 0; }
+  .workspace { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 12px; min-height: 0; }
+
+  .controls { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  input[type=search], select { font: inherit; padding: 5px 8px; border: 1px solid var(--warm-slate); border-radius: 4px;
+                               background: var(--white); min-width: 0; }
+  input[type=search] { flex: 1; min-width: 120px; }
+  label.check { display: flex; gap: 4px; align-items: center; color: var(--slate); font-size: 12px; }
+  .list { overflow-y: auto; overflow-x: hidden; flex: 1; }
+  .row { padding: 10px 14px; border-bottom: 1px solid var(--warm-slate-300); cursor: pointer; display: grid;
+         grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; border-left: 4px solid transparent; }
+  .row > *, .ref > * { min-width: 0; }
+  .row:hover { background: var(--warm-slate-100); }
+  .row.sel { background: var(--black); color: var(--white); border-left-color: var(--yellow); }
+  .row.sel .small { color: var(--warm-slate); }
+  .row .name { font-weight: 600; overflow-wrap: anywhere; }
+  .small { color: var(--slate); font-size: 12px; overflow-wrap: anywhere; }
+  .more { padding: 10px 14px; color: var(--slate); }
+  .more button { background: none; border: 1px solid var(--black); border-radius: 4px; padding: 4px 12px; }
+  .empty { padding: 20px 16px; color: var(--slate); }
+
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 999px;
+          font-size: 12px; font-weight: 600; white-space: nowrap; color: var(--black); }
+  .pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .pill.ready { background: var(--morning-100); } .pill.ready::before { background: var(--morning); }
+  .pill.not_ready, .pill.blocking { background: var(--dusk-100); } .pill.not_ready::before, .pill.blocking::before { background: var(--dusk); }
+  .pill.unknown { background: var(--dawn-100); } .pill.unknown::before { background: var(--dawn); }
+  .pill.unassigned, .pill.info, .pill.done { background: var(--slate-100); } .pill.unassigned::before, .pill.info::before { background: var(--slate); }
+  .pill.done::before { background: var(--morning); }
+
+  /* Lifecycle band */
+  .band { padding: 12px 16px 14px; }
+  .band-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 10px; }
+  .band-top h2 { font-size: 16px; }
+  .phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--warm-slate);
+            border-radius: 6px; overflow: hidden; }
+  .phase { background: var(--white); border: 0; border-right: 1px solid var(--warm-slate); text-align: left; padding: 10px 12px;
+           display: grid; grid-template-columns: auto 1fr auto; gap: 2px 10px; align-items: baseline; }
+  .phase:last-child { border-right: 0; }
+  .phase:hover { background: var(--warm-slate-100); }
+  .phase.active { background: var(--black); color: var(--white); box-shadow: inset 0 -4px 0 var(--yellow); }
+  .phase.active .small, .phase.active .ph-num { color: var(--warm-slate); }
+  .phase .ph-num { font-size: 11px; color: var(--slate); font-weight: 600; }
+  .phase .ph-name { font-family: "Artifakt Legend", Arial, sans-serif; font-weight: 700; }
+  .phase .ph-count { font-family: "Artifakt Legend", Arial, sans-serif; font-weight: 700; font-size: 20px; }
+  .phase .small { grid-column: 1 / -1; }
+  .phase .bar { grid-column: 1 / -1; height: 6px; background: var(--slate-100); border-radius: 3px; overflow: hidden; display: flex; margin-top: 4px; }
+  .bar i { display: block; height: 100%; }
+  .stepper-wrap { margin-top: 12px; }
+  .stepper { display: flex; gap: 2px; overflow-x: auto; padding-bottom: 2px; }
+  .step { flex: 1 0 auto; min-width: 76px; padding: 6px 8px; background: var(--white); border: 1px solid var(--warm-slate);
+          font-size: 11px; line-height: 1.3; text-align: left; color: var(--black); }
+  .step:first-child { border-radius: 4px 0 0 4px; } .step:last-child { border-radius: 0 4px 4px 0; }
+  .step.done { background: var(--warm-slate-300); border-color: var(--warm-slate-300); }
+  .step.current { background: var(--black); color: var(--white); border-color: var(--black); box-shadow: inset 0 -3px 0 var(--yellow); }
+  .step .cnt { display: block; font-family: "Artifakt Legend", Arial, sans-serif; font-weight: 700; font-size: 14px; }
+  button.step:hover { border-color: var(--black); }
+  button.step.picked { background: var(--black); color: var(--white); box-shadow: inset 0 -3px 0 var(--yellow); }
+
+  /* Graph */
+  .graph-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; flex-wrap: wrap; }
+  .flt { font-size: 12px; border: 1px solid var(--warm-slate); background: var(--white); border-radius: 4px; padding: 4px 8px; }
+  .flt.active { background: var(--black); color: var(--white); border-color: var(--black); }
+  .graph-body { flex: 1; min-height: 0; position: relative; }
+  .graph-body svg { width: 100%; height: 100%; display: block; }
+  .zone { fill: var(--warm-slate-100); }
+  .zone.active { fill: var(--warm-slate-300); }
+  .zone-label { font-family: "Artifakt Element", Arial, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; fill: var(--slate); }
+  .edge { fill: none; stroke: var(--slate-300); stroke-width: 1.4; }
+  .edge.hl { stroke: var(--black); stroke-width: 2.4; }
+  .edge.dim, .node.dim { opacity: .15; }
+  .node { cursor: pointer; }
+  .node text { font-family: "Artifakt Element", Arial, sans-serif; font-size: 11px; fill: var(--black);
+               paint-order: stroke; stroke: var(--white); stroke-width: 3px; stroke-linejoin: round; }
+  .node .sub { font-size: 10px; fill: var(--slate); }
+  .node .halo { fill: none; stroke: transparent; stroke-width: 3; }
+  .node.sel .halo { stroke: var(--black); }
+  .node:hover .disc { stroke: var(--black); stroke-width: 2; }
+  .graph-foot { display: flex; gap: 14px; flex-wrap: wrap; padding: 8px 14px; border-top: 1px solid var(--warm-slate);
+                font-size: 11px; color: var(--slate); }
+  .legend { display: flex; align-items: center; gap: 5px; }
+  .legend i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+
+  /* Viewer */
+  .viewer-box { flex: 1; position: relative; min-height: 0; background: var(--warm-slate-100); }
+  #viewer { position: absolute; inset: 0; }
+  .viewer-msg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center;
+                padding: 24px; color: var(--slate); line-height: 1.5; z-index: 2; }
+  .viewer-msg code { background: var(--white); padding: 2px 6px; border-radius: 4px; color: var(--black); }
+  .viewer-foot { padding: 8px 14px; border-top: 1px solid var(--warm-slate); font-size: 12px; color: var(--slate); min-height: 34px; }
+
+  /* Inspector */
+  .insp-top { padding: 14px 16px; border-bottom: 1px solid var(--warm-slate); }
+  .insp-top .title { font-family: "Artifakt Legend", Arial, sans-serif; font-weight: 700; font-size: 18px; margin: 6px 0;
+                     overflow-wrap: anywhere; }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 10px 0 0; font-size: 13px; }
+  dt { color: var(--slate); } dd { margin: 0; overflow-wrap: anywhere; }
+  a { color: var(--black); font-weight: 600; }
+  .group h3 { font-size: 13px; padding: 12px 16px 4px; }
+  .ref { padding: 8px 16px; border-bottom: 1px solid var(--warm-slate-300); display: grid; grid-template-columns: 1fr auto;
+         gap: 2px 10px; cursor: pointer; border-left: 4px solid transparent; }
+  .ref:hover { background: var(--warm-slate-100); }
+  .ref.sel { border-left-color: var(--black); background: var(--warm-slate-100); }
+  .ref .label { font-weight: 600; overflow-wrap: anywhere; font-size: 13px; }
+  footer { padding: 0 24px 20px; color: var(--slate); font-size: 12px; }
+  @media (max-width: 1500px) { .workspace { grid-template-columns: 1fr; grid-template-rows: 520px 480px; }
+                                .center { grid-template-rows: auto auto; } }
+  @media (max-width: 1100px) { .layout { grid-template-columns: 1fr; } .layout > .panel, .sidebar { height: auto; }
+                                .sidebar { grid-template-rows: 300px 480px; } .layout > .panel { max-height: 700px; }
+                                .tiles { grid-template-columns: repeat(3, 1fr); } }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>System readiness</h1>
+    <div class="sub" id="project"></div>
+  </div>
+  <div class="meta" id="meta"></div>
+</header>
+<div id="banner"></div>
+<div class="tiles" id="tiles"></div>
+
+<div class="layout">
+  <div class="sidebar">
+    <section class="panel">
+      <div class="head">
+        <h2>Systems</h2>
+        <div class="controls"><input type="search" id="sysSearch" placeholder="Search systems" aria-label="Search systems"></div>
+      </div>
+      <div class="list" id="systems"></div>
+    </section>
+    <section class="panel">
+      <div class="head">
+        <h2 id="assetsTitle">Assets</h2>
+        <div class="controls">
+          <input type="search" id="assetSearch" placeholder="Name or barcode" aria-label="Search assets">
+          <select id="assetStatus" aria-label="Filter by readiness">
+            <option value="">All</option><option value="not_ready">Not ready</option>
+            <option value="unknown">Unknown</option><option value="ready">Ready</option>
+          </select>
+          <select id="assetCategory" aria-label="Filter by category"><option value="">All categories</option></select>
+          <label class="check"><input type="checkbox" id="onlyLinked"> Only assets with links</label>
+        </div>
+      </div>
+      <div class="list" id="assets"><div class="empty">Select a system.</div></div>
+    </section>
+  </div>
+
+  <div class="center">
+    <section class="panel band" id="band"></section>
+    <div class="workspace">
+      <section class="panel">
+        <div class="head graph-head">
+          <div><div class="kicker">Connected lifecycle information</div><h2 id="graphTitle">Relationship graph</h2></div>
+          <div class="controls" id="filters">
+            <button class="flt active" data-f="all">All</button>
+            <button class="flt" data-f="actions">Issues and forms</button>
+            <button class="flt" data-f="docs">Documents</button>
+            <button class="flt" data-f="other">Other links</button>
+          </div>
+        </div>
+        <div class="graph-body" id="graphBody"><div class="empty">Select an asset to see what it is connected to.</div></div>
+        <div class="graph-foot">
+          <span class="legend"><i style="background:var(--dusk)"></i>Blocking</span>
+          <span class="legend"><i style="background:var(--dawn)"></i>Unknown</span>
+          <span class="legend"><i style="background:var(--morning)"></i>Done</span>
+          <span class="legend"><i style="background:var(--slate-300)"></i>Reference</span>
+          <span>Squares are documents. Lines follow the actual links, for example asset > document > issue.</span>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="head"><div class="kicker">3D model</div><h2 id="viewerTitle">Viewer</h2></div>
+        <div class="viewer-box"><div id="viewer"></div><div class="viewer-msg" id="viewerMsg"></div></div>
+        <div class="viewer-foot" id="viewerFoot"></div>
+      </section>
+    </div>
+  </div>
+
+  <section class="panel">
+    <div class="insp-top" id="inspTop"></div>
+    <div class="head"><div class="controls" style="justify-content:space-between">
+      <span class="kicker" id="relTitle">Related information</span>
+      <label class="check"><input type="checkbox" id="onlyBlocking"> Only blocking and unknown</label>
+    </div></div>
+    <div class="list" id="refs"></div>
+  </section>
+</div>
+<footer id="footer"></footer>
+
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>
+const D = JSON.parse(document.getElementById("data").textContent);
+const STATUS = { ready: "Ready", not_ready: "Not ready", unknown: "Unknown", unassigned: "No system",
+                 blocking: "Blocking", info: "Reference", done: "Done" };
+const ORDER = { not_ready: 0, unknown: 1, ready: 2, unassigned: 3 };
+const STATE_ORDER = { blocking: 0, unknown: 1, done: 2, info: 3 };
+const STATE_COLOR = { blocking: "#F2520A", unknown: "#F09D4F", done: "#2AD0A9", info: "#A3A3A3",
+                      not_ready: "#F2520A", ready: "#2AD0A9", unassigned: "#A3A3A3" };
+const DOC_TYPES = ["documentlineage", "documentversion"];
+const PAGE = 200;
+const assetsById = Object.fromEntries(D.assets.map(a => [a.id, a]));
+const assetsByName = new Map(D.assets.map(a => [a.name.toLowerCase(), a]));
+const state = { system: null, asset: null, node: null, phase: null, filter: "all", step: null, set: null, shown: PAGE };
+let graphCache = {};
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const pill = st => `<span class="pill ${st}">${STATUS[st] || st}</span>`;
+const fmt = n => Number(n).toLocaleString("en-GB");
+const plural = (n, w) => `${fmt(n)} ${w}${n === 1 ? "" : "s"}`;
+const cut = (s, n) => (s.length > n ? s.slice(0, n - 1) + "…" : s);
+const phaseLabel = id => (D.phases.find(p => p.id === id) || {}).label || id;
+
+/* ---------- header ---------- */
+function header() {
+  const m = D.meta;
+  $("project").textContent = `${m.projectName || "Project"} · systems from "${m.systemAttribute}"`;
+  $("meta").innerHTML = `Data as of ${esc(m.generatedAtLocal)}<br>Signed in as ${esc(m.user || "unknown")}`;
+  if (m.stale) $("banner").innerHTML = `<div class="banner"><strong>Stale data.</strong> ${esc(m.stale)}</div>`;
+  const sys = D.systems.filter(s => !s.isUnassigned);
+  const count = st => sys.filter(s => s.status === st).length;
+  const tiles = [[sys.length, "systems"], [count("ready"), "ready"], [count("not_ready"), "not ready"], [count("unknown"), "unknown"],
+                 [m.openIssuesLinked, "open issues linked to assets"], [m.openFormsLinked, "open forms linked to assets"]];
+  $("tiles").innerHTML = tiles.map(([n, l]) => `<div class="tile"><div class="n">${fmt(n)}</div><div class="l">${l}</div></div>`).join("");
+  $("footer").innerHTML = `Ready = no open issue or form linked within ${m.maxDepth} steps. Issues count as done when ${esc(m.issueDoneStatuses)}, forms when ${esc(m.formDoneStatuses)}. ` +
+    `Lifecycle phases are derived from the item type. Meeting items, RFIs, schedule items and other links are shown but never block. Read only.`;
+}
+
+/* ---------- systems and assets ---------- */
+function renderSystems() {
+  const q = $("sysSearch").value.trim().toLowerCase();
+  const list = D.systems.filter(s => !q || s.name.toLowerCase().includes(q))
+    .sort((a, b) => (ORDER[a.status] - ORDER[b.status]) || a.name.localeCompare(b.name));
+  $("systems").innerHTML = list.map(s => {
+    const linkNote = s.assetsWithReferences === 0 ? " · no links at all" : ` · ${fmt(s.assetsWithReferences)} with links`;
+    const detail = s.status === "ready" || s.status === "unassigned" ? plural(s.assetCount, "asset") + linkNote
+      : `${plural(s.blockingCount, "blocking item")} · ${s.assetsNotReady} not ready of ${s.assetCount}`;
+    return `<div class="row ${state.system === s.id ? "sel" : ""}" data-id="${esc(s.id)}" tabindex="0">
+      <div class="name">${esc(s.name)}</div>${pill(s.status)}<div class="small">${esc(detail)}</div></div>`;
+  }).join("") || `<div class="empty">No systems match.</div>`;
+}
+
+const currentSystem = () => D.systems.find(x => x.id === state.system);
+const systemAssets = () => { const s = currentSystem(); return s ? s.assetIds.map(id => assetsById[id]).filter(Boolean) : []; };
+
+function fillCategories() {
+  const cats = [...new Set(systemAssets().map(a => a.category).filter(Boolean))].sort();
+  $("assetCategory").innerHTML = `<option value="">All categories</option>` + cats.map(c => `<option>${esc(c)}</option>`).join("");
+}
+
+function filteredAssets() {
+  const q = $("assetSearch").value.trim().toLowerCase(), st = $("assetStatus").value, cat = $("assetCategory").value;
+  const onlyLinked = $("onlyLinked").checked;
+  return systemAssets().filter(a =>
+      (!q || a.name.toLowerCase().includes(q) || (a.barcode || "").toLowerCase().includes(q)) &&
+      (!st || a.status === st) && (!cat || a.category === cat) && (!onlyLinked || a.refCount > 0) &&
+      (!state.step || (a.lifecycleSetId === state.step.set && a.lifecycleStep === state.step.n)))
+    .sort((a, b) => (ORDER[a.status] - ORDER[b.status]) || (b.blockingCount - a.blockingCount) || a.name.localeCompare(b.name));
+}
+
+function renderAssets() {
+  if (!state.system) return;
+  const list = filteredAssets();
+  $("assetsTitle").textContent = `Assets in ${currentSystem().name} (${fmt(list.length)})`;
+  const rows = list.slice(0, state.shown).map(a => {
+    const detail = [a.category, a.barcode && `barcode ${a.barcode}`, a.assetStatus].filter(Boolean).join(" · ");
+    const counts = a.status === "ready" ? (a.refCount ? plural(a.refCount, "reference") : "no links")
+      : `${fmt(a.blockingCount)} blocking${a.unknownCount ? `, ${a.unknownCount} unknown` : ""}`;
+    return `<div class="row ${state.asset === a.id ? "sel" : ""}" data-id="${esc(a.id)}" tabindex="0">
+      <div class="name">${esc(a.name)}</div>${pill(a.status)}<div class="small">${esc(detail)}</div><div class="small">${esc(counts)}</div></div>`;
+  }).join("");
+  const more = list.length > state.shown ? `<div class="more">Showing ${state.shown} of ${fmt(list.length)}. <button id="showMore">Show more</button></div>` : "";
+  $("assets").innerHTML = rows + more || `<div class="empty">No assets match the filters.</div>`;
+  if ($("showMore")) $("showMore").onclick = () => { state.shown += PAGE; renderAssets(); };
+}
+
+/* ---------- lifecycle band ---------- */
+function refsInScope() {
+  if (state.asset) return assetsById[state.asset].references || [];
+  // System scope: distinct references across its assets.
+  const seen = new Map();
+  systemAssets().forEach(a => (a.references || []).forEach(r => { if (!seen.has(r.key)) seen.set(r.key, r); }));
+  return [...seen.values()];
+}
+
+function renderBand() {
+  if (!state.system) { $("band").innerHTML = `<div class="kicker">Lifecycle</div><div class="empty" style="padding:8px 0">Select a system to see its lifecycle.</div>`; return; }
+  const asset = assetsById[state.asset];
+  const refs = refsInScope();
+  const cards = D.phases.map((p, i) => {
+    const inPhase = refs.filter(r => r.phase === p.id);
+    const by = st => inPhase.filter(r => r.state === st).length;
+    const total = inPhase.length || 1;
+    const bar = ["blocking", "unknown", "done", "info"].map(st => `<i style="width:${(by(st) / total) * 100}%;background:${STATE_COLOR[st]}"></i>`).join("");
+    const note = inPhase.length ? `${by("blocking")} blocking · ${by("unknown")} unknown · ${inPhase.length - by("blocking") - by("unknown")} other` : "Nothing linked";
+    return `<button class="phase ${state.phase === p.id ? "active" : ""}" data-phase="${p.id}" title="${esc(p.hint)}">
+      <span class="ph-num">0${i + 1}</span><span class="ph-name">${esc(p.label)}</span><span class="ph-count">${fmt(inPhase.length)}</span>
+      <span class="small">${esc(note)}</span><span class="bar">${inPhase.length ? bar : ""}</span></button>`;
+  }).join("");
+  const scope = asset ? esc(asset.name) : `${esc(currentSystem().name)} · ${plural(systemAssets().length, "asset")}`;
+  $("band").innerHTML = `<div class="band-top"><div><div class="kicker">Lifecycle</div><h2>${scope}</h2></div>
+      <span class="small">Click a phase to focus the graph and the list. Phases are derived from item type.</span></div>
+    <div class="phases">${cards}</div><div class="stepper-wrap">${asset ? assetStepper(asset) : systemStepper()}</div>`;
+}
+
+function assetStepper(a) {
+  const set = D.lifecycleSets[a.lifecycleSetId];
+  if (!set || !a.lifecycleStep) return `<span class="small">No lifecycle status set for this asset.</span>`;
+  const steps = set.steps.map((label, i) => {
+    const n = i + 1, cls = n < a.lifecycleStep ? "done" : n === a.lifecycleStep ? "current" : "";
+    return `<div class="step ${cls}" title="Step ${n} of ${set.steps.length}">${esc(label)}</div>`;
+  }).join("");
+  return `<div class="small" style="margin-bottom:6px">Asset lifecycle "${esc(set.name)}": step ${a.lifecycleStep} of ${set.steps.length}, ${esc(a.assetStatus)}</div><div class="stepper">${steps}</div>`;
+}
+
+function systemStepper() {
+  const bySet = {};
+  systemAssets().forEach(a => { if (a.lifecycleSetId) (bySet[a.lifecycleSetId] = bySet[a.lifecycleSetId] || []).push(a); });
+  const ids = Object.keys(bySet).sort((x, y) => bySet[y].length - bySet[x].length);
+  if (!ids.length) return `<span class="small">No lifecycle statuses on these assets.</span>`;
+  const setId = state.set && bySet[state.set] ? state.set : ids[0];
+  const set = D.lifecycleSets[setId], members = bySet[setId];
+  const steps = set.steps.map((label, i) => {
+    const n = i + 1, c = members.filter(a => a.lifecycleStep === n).length;
+    const picked = state.step && state.step.set === setId && state.step.n === n;
+    return `<button class="step ${picked ? "picked" : ""}" data-set="${esc(setId)}" data-n="${n}" title="Show only assets at this step"><span class="cnt">${fmt(c)}</span>${esc(label)}</button>`;
+  }).join("");
+  const picker = ids.length > 1 ? `<select id="setPick" aria-label="Lifecycle">${ids.map(id => `<option value="${esc(id)}" ${id === setId ? "selected" : ""}>${esc(D.lifecycleSets[id].name)} (${fmt(bySet[id].length)})</option>`).join("")}</select>` : "";
+  return `<div class="controls" style="margin-bottom:6px"><span class="small">Where the assets are in their lifecycle. Click a step to filter the asset list.</span>${picker}</div><div class="stepper">${steps}</div>`;
+}
+
+/* ---------- relationship graph ---------- */
+const W = 900, ZONE_TOP = 92, MAX_PER_ZONE = 14;
+let H = 470;
+function filterOk(r) {
+  if (state.filter === "actions") return r.type === "issue" || r.type === "form";
+  if (state.filter === "docs") return DOC_TYPES.includes(r.type);
+  if (state.filter === "other") return !["issue", "form", ...DOC_TYPES].includes(r.type);
+  return true;
+}
+
+function graphNodes(asset) {
+  const zones = {};
+  D.phases.forEach(p => (zones[p.id] = []));
+  const agg = {};
+  (asset.references || []).forEach(r => {
+    const z = zones[r.phase] ? r.phase : "execution";
+    if (["issue", "form", ...DOC_TYPES].includes(r.type)) zones[z].push({ ...r, id: r.key });
+    else {
+      const k = `agg:${z}:${r.typeLabel}`;
+      agg[k] = agg[k] || { id: k, key: k, aggregate: true, type: r.type, typeLabel: r.typeLabel, phase: z, state: "info", depth: 1, items: [] };
+      agg[k].items.push(r);
+    }
+  });
+  Object.values(agg).forEach(n => { n.label = `${n.typeLabel} × ${n.items.length}`; zones[n.phase].push(n); });
+  const out = [];
+  Object.entries(zones).forEach(([z, list]) => {
+    list.sort((a, b) => (STATE_ORDER[a.state] - STATE_ORDER[b.state]) || (a.depth - b.depth) || a.label.localeCompare(b.label));
+    let shown = list;
+    if (list.length > MAX_PER_ZONE) {
+      shown = list.slice(0, MAX_PER_ZONE - 1);
+      const rest = list.slice(MAX_PER_ZONE - 1);
+      const worst = rest.reduce((w, r) => (STATE_ORDER[r.state] < STATE_ORDER[w] ? r.state : w), "info");
+      shown.push({ id: `more:${z}`, key: `more:${z}`, aggregate: true, more: true, typeLabel: "More items", label: `+ ${rest.length} more`, phase: z, state: worst, depth: 1, items: rest });
+    }
+    out.push(...shown);
+  });
+  return out;
+}
+
+function renderGraph() {
+  const asset = assetsById[state.asset];
+  if (!asset) {
+    $("graphTitle").textContent = "Relationship graph";
+    $("graphBody").innerHTML = `<div class="empty">Select an asset to see what it is connected to.</div>`;
+    graphCache = {};
+    return;
+  }
+  $("graphTitle").textContent = cut(asset.name, 48);
+  // Match the drawing's height to the panel's shape so the nodes use the whole area.
+  const box = $("graphBody").getBoundingClientRect();
+  H = box.width > 0 ? Math.max(420, Math.min(900, Math.round(W * box.height / box.width))) : 470;
+  const nodes = graphNodes(asset);
+  graphCache = Object.fromEntries(nodes.map(n => [n.id, n]));
+  if (!nodes.length) { $("graphBody").innerHTML = `<div class="empty">Nothing is linked to this asset in Forma.</div>`; return; }
+  const zw = (W - 24) / D.phases.length;
+  const center = `asset:${asset.id}`;
+  const pos = { [center]: { x: W / 2 - 120, y: 44 } };
+  const labelLen = {};
+  D.phases.forEach((p, zi) => {
+    const list = nodes.filter(n => n.phase === p.id);
+    const cols = list.length > 8 ? 2 : 1;  // one column when there is room, so labels can be longer
+    const rows = Math.ceil(list.length / cols) || 1;
+    const step = Math.min(56, (H - ZONE_TOP - 62) / rows);
+    list.forEach((n, i) => {
+      const col = cols === 1 ? 0 : i % 2, row = cols === 1 ? i : Math.floor(i / 2);
+      pos[n.id] = { x: 12 + zi * zw + 24 + col * (zw / 2 - 6), y: ZONE_TOP + 46 + row * step };
+      labelLen[n.id] = cols === 1 ? 40 : 20;
+    });
+  });
+  const visible = n => filterOk(n) && (!state.phase || n.phase === state.phase);
+  let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Relationship graph for ${esc(asset.name)}">`;
+  D.phases.forEach((p, zi) => {
+    const x = 12 + zi * zw;
+    svg += `<rect class="zone ${state.phase === p.id ? "active" : ""}" x="${x + 2}" y="${ZONE_TOP}" width="${zw - 4}" height="${H - ZONE_TOP - 6}" rx="6"></rect>`;
+    svg += `<text class="zone-label" x="${x + 16}" y="${ZONE_TOP + 20}">${esc(p.label.toUpperCase())}</text>`;
+  });
+  // Edges: from the item before it on the path when that item is shown, else from the asset.
+  nodes.forEach(n => {
+    const from = n.via && pos[n.via] ? n.via : center;
+    const a = pos[from], b = pos[n.id];
+    const hl = state.node && (state.node === n.id || state.node === from);
+    const my = from === center ? (a.y + b.y) / 2 - 10 : (a.y + b.y) / 2;
+    svg += `<path class="edge ${hl ? "hl" : ""} ${visible(n) ? "" : "dim"}" d="M${a.x} ${a.y} Q${(a.x + b.x) / 2} ${my} ${b.x} ${b.y}"></path>`;
+  });
+  const c = pos[center];
+  svg += `<g class="node" data-node="${esc(center)}" transform="translate(${c.x} ${c.y})">
+    <title>${esc(asset.name)}</title>
+    <circle r="20" fill="#000" stroke="${STATE_COLOR[asset.status]}" stroke-width="5"></circle>
+    <text x="30" y="-2" style="font-weight:600">${esc(cut(asset.name, 52))}</text>
+    <text class="sub" x="30" y="13">${esc(STATUS[asset.status])} · ${esc(asset.assetStatus || "no lifecycle status")}</text></g>`;
+  nodes.forEach(n => {
+    const p = pos[n.id];
+    const isDoc = DOC_TYPES.includes(n.type) && !n.aggregate;
+    const r = n.aggregate ? 8 : isDoc ? 7 : 9;
+    const shape = isDoc
+      ? `<rect class="disc" x="${-r}" y="${-r}" width="${2 * r}" height="${2 * r}" rx="2" fill="${STATE_COLOR[n.state]}" stroke="#fff" stroke-width="1"></rect>`
+      : `<circle class="disc" r="${r}" fill="${STATE_COLOR[n.state]}" stroke="#fff" stroke-width="1" ${n.aggregate ? 'stroke-dasharray="2 2"' : ""}></circle>`;
+    const sub = n.aggregate ? (n.more ? "click to list them" : "linked directly") : `${n.typeLabel}${n.status ? " · " + n.status : ""}`;
+    svg += `<g class="node ${state.node === n.id ? "sel" : ""} ${visible(n) ? "" : "dim"}" data-node="${esc(n.id)}" transform="translate(${p.x} ${p.y})">
+      <title>${esc(n.label)}${n.path && n.depth > 1 ? "\nvia " + esc(n.path.slice(0, -1).join(" > ")) : ""}</title>
+      <circle class="halo" r="${r + 5}"></circle>${shape}
+      <text x="${r + 6}" y="0">${esc(cut(n.label, labelLen[n.id]))}</text><text class="sub" x="${r + 6}" y="12">${esc(cut(sub, labelLen[n.id] + 4))}</text></g>`;
+  });
+  $("graphBody").innerHTML = svg + `</svg>`;
+}
+
+/* ---------- inspector ---------- */
+function renderInspector() {
+  const asset = assetsById[state.asset];
+  const s = currentSystem();
+  const node = state.node && graphCache[state.node];
+  let top;
+  if (node) {
+    const linkFrom = node.via ? `via ${node.path.slice(0, -1).join(" > ")}` : "linked directly to the asset";
+    top = `<div class="kicker">${esc(node.typeLabel || "Group")} · ${esc(phaseLabel(node.phase))}</div>
+      <div class="title">${esc(node.label)}</div>${pill(node.state)}
+      <dl>${node.status ? `<dt>Status</dt><dd>${esc(node.status)}</dd>` : ""}
+        ${node.itemType ? `<dt>Type</dt><dd>${esc(node.itemType)}</dd>` : ""}
+        ${node.dueDate ? `<dt>Due</dt><dd>${esc(node.dueDate)}</dd>` : ""}
+        ${node.aggregate ? `<dt>Items</dt><dd>${node.items.length}, listed below</dd>` : `<dt>Link</dt><dd>${esc(linkFrom)}</dd>`}
+        ${node.url ? `<dt>Forma</dt><dd><a href="${esc(node.url)}" target="_blank" rel="noopener">Open in Forma</a></dd>` : ""}
+      </dl><div style="margin-top:10px"><button class="flt" id="backToAsset">Back to the asset</button></div>`;
+  } else if (asset) {
+    const set = D.lifecycleSets[asset.lifecycleSetId];
+    top = `<div class="kicker">Asset</div><div class="title">${esc(asset.name)}</div>${pill(asset.status)}
+      <dl><dt>System</dt><dd>${esc(asset.systemIds.join(", ") || "none")}</dd>
+        <dt>Category</dt><dd>${esc(asset.category || "none")}</dd>
+        <dt>Lifecycle</dt><dd>${esc(asset.assetStatus || "none")}${set && asset.lifecycleStep ? ` (step ${asset.lifecycleStep} of ${set.steps.length}, ${esc(set.name)})` : ""}</dd>
+        ${asset.barcode ? `<dt>Barcode</dt><dd>${esc(asset.barcode)}</dd>` : ""}
+        <dt>Blocking</dt><dd>${fmt(asset.blockingCount)}${asset.unknownCount ? `, ${asset.unknownCount} unknown` : ""}</dd>
+        ${asset.url ? `<dt>Forma</dt><dd><a href="${esc(asset.url)}" target="_blank" rel="noopener">Open asset in Forma</a></dd>` : ""}
+      </dl>`;
+  } else if (s) {
+    top = `<div class="kicker">System</div><div class="title">${esc(s.name)}</div>${pill(s.status)}
+      <dl><dt>Assets</dt><dd>${fmt(s.assetCount)}</dd><dt>With links</dt><dd>${fmt(s.assetsWithReferences)}</dd>
+        <dt>Not ready</dt><dd>${fmt(s.assetsNotReady)}</dd><dt>Unknown</dt><dd>${fmt(s.assetsUnknown)}</dd>
+        <dt>Blocking items</dt><dd>${fmt(s.blockingCount)} distinct</dd></dl>`;
+  } else {
+    top = `<div class="kicker">Inspector</div><div class="empty" style="padding:8px 0">Select a system, an asset or a node in the graph.</div>`;
+  }
+  $("inspTop").innerHTML = top;
+  if ($("backToAsset")) $("backToAsset").onclick = () => { state.node = null; renderGraph(); renderInspector(); };
+  renderRefList();
+}
+
+function renderRefList() {
+  const node = state.node && graphCache[state.node];
+  let refs = node && node.aggregate ? node.items : refsInScope();
+  const only = $("onlyBlocking").checked;
+  refs = refs.filter(r => (!only || r.state === "blocking" || r.state === "unknown") && filterOk(r) && (!state.phase || r.phase === state.phase));
+  const scope = node && node.aggregate ? node.label : state.asset ? "this asset" : state.system ? "this system" : "";
+  $("relTitle").textContent = scope ? `Related information · ${scope} (${refs.length})` : "Related information";
+  if (!state.system) { $("refs").innerHTML = ""; return; }
+  const groups = {};
+  refs.forEach(r => (groups[r.typeLabel] = groups[r.typeLabel] || []).push(r));
+  const typeOrder = t => { const i = ["Issue", "Form", "Document"].indexOf(t); return i === -1 ? 9 : i; };
+  const html = Object.keys(groups).sort((x, y) => typeOrder(x) - typeOrder(y) || x.localeCompare(y)).map(t => {
+    const items = groups[t].sort((x, y) => STATE_ORDER[x.state] - STATE_ORDER[y.state] || x.depth - y.depth).slice(0, 300);
+    return `<div class="group"><h3>${esc(t)} (${groups[t].length})</h3>` + items.map(r => {
+      const extra = [r.status && `status ${r.status}`, r.itemType, r.dueDate && `due ${r.dueDate}`, phaseLabel(r.phase)].filter(Boolean).join(" · ");
+      const path = r.depth > 1 ? `via ${r.path.slice(0, -1).join(" > ")}` : "linked directly";
+      const link = r.url ? `<a href="${esc(r.url)}" target="_blank" rel="noopener">Open in Forma</a>` : "";
+      return `<div class="ref ${state.node === r.key ? "sel" : ""}" data-key="${esc(r.key)}"><div class="label">${esc(r.label)}</div>${pill(r.state)}
+        <div class="small">${esc(extra)} · ${esc(path)}</div><div>${link}</div></div>`;
+    }).join("") + `</div>`;
+  }).join("");
+  $("refs").innerHTML = html || `<div class="empty">${only ? "Nothing blocking or unknown here." : "Nothing linked."}</div>`;
+}
+
+/* ---------- live viewer (only when served by py src/serve.py) ---------- */
+const V = { viewer: null, models: [], nameMaps: [] };
+function viewerMessage(html) { $("viewerMsg").innerHTML = html; $("viewerMsg").style.display = html ? "flex" : "none"; }
+const viewerReady = () => V.viewer && D.models.every((m, i) => V.nameMaps[i]);
+
+async function initViewer() {
+  $("viewerTitle").textContent = D.models.length ? D.models.map(m => m.name.replace(/\.rvt$/i, "")).join(" + ") : "Viewer";
+  if (!D.models.length) { viewerMessage("No models configured. Set <code>VIEWER_MODELS</code> in .env and run the refresh."); return; }
+  if (!location.protocol.startsWith("http")) {
+    viewerMessage("The live viewer needs your login. Run <code>py src/serve.py</code> and open <code>http://127.0.0.1:8765</code>.");
+    return;
+  }
+  try {
+    const t = await fetch("/api/token", { cache: "no-store" });
+    if (!t.ok) throw new Error((await t.json()).error || t.status);
+  } catch (e) {
+    viewerMessage(`No token for the viewer (${esc(e.message)}). Run <code>py src/auth.py login</code>, then restart <code>py src/serve.py</code>.`);
+    return;
+  }
+  viewerMessage("Loading the Autodesk viewer…");
+  const base = "https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/";
+  const css = document.createElement("link"); css.rel = "stylesheet"; css.href = base + "style.min.css"; document.head.appendChild(css);
+  const js = document.createElement("script"); js.src = base + "viewer3D.min.js";
+  js.onerror = () => viewerMessage("Could not load the Autodesk viewer from developer.api.autodesk.com. Check the internet connection.");
+  js.onload = startViewer;
+  document.head.appendChild(js);
+}
+
+function startViewer() {
+  const options = {
+    env: "AutodeskProduction2", api: "streamingV2",
+    getAccessToken: cb => fetch("/api/token", { cache: "no-store" }).then(r => r.json()).then(t => cb(t.access_token, t.expires_in)),
+  };
+  Autodesk.Viewing.Initializer(options, () => {
+    V.viewer = new Autodesk.Viewing.GuiViewer3D($("viewer"));
+    V.viewer.start();
+    V.viewer.setTheme("light-theme");
+    V.viewer.addEventListener(Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT, onViewerSelect);
+    viewerMessage("Loading models…");
+    D.models.forEach((m, i) => loadModel(m, i));
+  });
+}
+
+function loadModel(m, index) {
+  Autodesk.Viewing.Document.load("urn:" + m.urn, doc => {
+    const node = doc.getRoot().getDefaultGeometry();
+    V.viewer.loadDocumentNode(doc, node, { keepCurrentModels: true, globalOffset: { x: 0, y: 0, z: 0 } }).then(model => {
+      V.models[index] = model;
+      model.getObjectTree(tree => {
+        const map = new Map();
+        tree.enumNodeChildren(tree.getRootId(), id => { const n = tree.getNodeName(id); if (n) map.set(n.toLowerCase(), id); }, true);
+        V.nameMaps[index] = map;
+        if (viewerReady()) { viewerMessage(""); syncViewer(); }
+      });
+    });
+  }, (code, msg) => viewerMessage(`Could not open ${esc(m.name)} (${esc(code)}). ${esc(msg || "")}`));
+}
+
+function findInModels(asset) {
+  for (let i = 0; i < V.models.length; i++) {
+    const id = V.nameMaps[i] && V.nameMaps[i].get(asset.name.toLowerCase());
+    if (id) return { model: V.models[i], id, name: D.models[i].name };
+  }
+  return null;
+}
+
+function vec(hex) { const n = parseInt(hex.slice(1), 16); return new THREE.Vector4(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255, 1); }
+
+function syncViewer() {
+  if (!viewerReady()) return;
+  V.models.forEach(m => V.viewer.clearThemingColors(m));
+  const asset = assetsById[state.asset];
+  if (asset) {
+    const hit = findInModels(asset);
+    if (hit) {
+      V.viewer.setThemingColor(hit.id, vec(STATE_COLOR[asset.status]), hit.model, true);
+      V.viewer.select([hit.id], hit.model);
+      V.viewer.fitToView([hit.id], hit.model);
+      $("viewerFoot").textContent = `${asset.name} found in ${hit.name}, coloured by readiness. Click an element to select its asset.`;
+    } else {
+      V.viewer.clearSelection();
+      $("viewerFoot").textContent = `${asset.name} is not in the loaded models.`;
+    }
+    return;
+  }
+  if (!state.system) { $("viewerFoot").textContent = "Click an element to select its asset."; return; }
+  // System scope: colour every asset of the system that is in the models.
+  const found = {}; let hits = 0, total = 0;
+  systemAssets().slice(0, 3000).forEach(a => {
+    total++;
+    const hit = findInModels(a);
+    if (!hit) return;
+    hits++;
+    V.viewer.setThemingColor(hit.id, vec(STATE_COLOR[a.status]), hit.model, true);
+    (found[hit.name] = found[hit.name] || { model: hit.model, ids: [] }).ids.push(hit.id);
+  });
+  V.viewer.clearSelection();
+  const groups = Object.values(found);
+  if (groups.length && groups[0].ids.length <= 500) V.viewer.fitToView(groups[0].ids, groups[0].model);
+  // Per-model coverage across the whole project, so models that match nothing can be dropped from VIEWER_MODELS.
+  const perModel = D.models.map((m, i) => `${m.name}: ${fmt(D.assets.filter(a => V.nameMaps[i].has(a.name.toLowerCase())).length)}`).join(" · ");
+  $("viewerFoot").textContent = `${fmt(hits)} of ${fmt(total)} assets of ${currentSystem().name} found in the models, coloured by readiness. Assets per model (whole project): ${perModel}.`;
+}
+
+function onViewerSelect(e) {
+  const sel = e.selections && e.selections[0];
+  if (!sel || !sel.dbIdArray.length) return;
+  const tree = sel.model.getInstanceTree();
+  // Walk up from the picked element until a node name matches an asset.
+  let id = sel.dbIdArray[0];
+  for (let guard = 0; id && guard < 8; guard++) {
+    const a = assetsByName.get((tree.getNodeName(id) || "").toLowerCase());
+    if (a) { if (a.id !== state.asset) selectAsset(a.id, true); return; }
+    id = tree.getNodeParentId(id);
+  }
+}
+
+/* ---------- selection ---------- */
+function selectSystem(id) {
+  Object.assign(state, { system: id, asset: null, node: null, step: null, set: null, phase: null, shown: PAGE });
+  $("onlyLinked").checked = currentSystem().isUnassigned;
+  $("assetSearch").value = ""; $("assetStatus").value = "";
+  fillCategories(); renderAll();
+}
+
+function selectAsset(id, fromViewer) {
+  const a = assetsById[id];
+  if (!a) return;
+  const sysId = a.systemIds[0] || "(no system)";
+  if (state.system !== sysId) { selectSystem(sysId); $("onlyLinked").checked = false; }
+  Object.assign(state, { asset: id, node: null });
+  renderAll(fromViewer);
+}
+
+function renderAll(fromViewer) {
+  renderSystems(); renderAssets(); renderBand(); renderGraph(); renderInspector();
+  if (!fromViewer) syncViewer();
+}
+
+function onPick(listId, handler) {
+  const el = $(listId);
+  const pick = e => { const row = e.target.closest(".row"); if (row) handler(row.dataset.id); };
+  el.addEventListener("click", pick);
+  el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(e); } });
+}
+
+onPick("systems", selectSystem);
+onPick("assets", id => selectAsset(id));
+$("graphBody").addEventListener("click", e => {
+  const g = e.target.closest(".node"); if (!g) return;
+  const id = g.dataset.node;
+  state.node = id.startsWith("asset:") ? null : id;
+  renderGraph(); renderInspector();
+});
+$("refs").addEventListener("click", e => {
+  if (e.target.closest("a")) return;
+  const row = e.target.closest(".ref"); if (!row) return;
+  if (graphCache[row.dataset.key]) { state.node = row.dataset.key; renderGraph(); renderInspector(); }
+});
+$("band").addEventListener("click", e => {
+  const ph = e.target.closest(".phase");
+  if (ph) { state.phase = state.phase === ph.dataset.phase ? null : ph.dataset.phase; renderBand(); renderGraph(); renderInspector(); return; }
+  const st = e.target.closest("button.step");
+  if (st) {
+    const pick = { set: st.dataset.set, n: Number(st.dataset.n) };
+    state.step = state.step && state.step.set === pick.set && state.step.n === pick.n ? null : pick;
+    state.shown = PAGE; $("onlyLinked").checked = false; renderAssets(); renderBand();
+  }
+});
+$("band").addEventListener("change", e => {
+  if (e.target.id === "setPick") { state.set = e.target.value; state.step = null; renderBand(); renderAssets(); }
+});
+$("filters").addEventListener("click", e => {
+  const b = e.target.closest(".flt"); if (!b) return;
+  state.filter = b.dataset.f;
+  document.querySelectorAll("#filters .flt").forEach(x => x.classList.toggle("active", x === b));
+  renderGraph(); renderRefList();
+});
+$("sysSearch").oninput = renderSystems;
+["assetSearch", "assetStatus", "assetCategory", "onlyLinked"].forEach(id => $(id).addEventListener("input", () => { state.shown = PAGE; renderAssets(); }));
+$("onlyBlocking").oninput = renderRefList;
+
+let resizeTimer;
+window.addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(renderGraph, 150); });
+header(); renderAll(); initViewer();
+</script>
+</body>
+</html>

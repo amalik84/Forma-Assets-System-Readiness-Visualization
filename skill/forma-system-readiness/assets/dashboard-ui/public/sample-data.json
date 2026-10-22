@@ -1,0 +1,2051 @@
+{
+ "meta": {
+  "hubId": "b.demo-hub",
+  "projectId": "demo-project",
+  "projectName": "DEMO \u00b7 Tower A Fit-out",
+  "generatedAt": "2026-10-21T18:19:49",
+  "formsApi": "v2",
+  "apiCalls": 0,
+  "durationSec": 0,
+  "groupBy": "custom_attribute",
+  "systemAttribute": "System",
+  "maxDepth": 3,
+  "issueClosed": [
+   "closed"
+  ],
+  "formOpen": [
+   "draft",
+   "inProgress",
+   "inReview",
+   "in_review"
+  ]
+ },
+ "summary": {
+  "systems": 5,
+  "systemsReady": 2,
+  "assets": 31,
+  "assetsReady": 17,
+  "openIssues": 14,
+  "openForms": 7,
+  "unlinkedOpenIssues": 5,
+  "totalIssues": 45,
+  "totalForms": 16
+ },
+ "systems": [
+  {
+   "name": "Electrical",
+   "assetIds": [
+    "a-Ele-Pan-0",
+    "a-Ele-Swi-0",
+    "a-Ele-UPS-0",
+    "a-Ele-UPS-2",
+    "a-Ele-UPS-1",
+    "a-Ele-UPS-3"
+   ],
+   "assetCount": 6,
+   "readyCount": 2,
+   "ready": false,
+   "openIssues": 6,
+   "openForms": 1,
+   "warnings": 2
+  },
+  {
+   "name": "HVAC",
+   "assetIds": [
+    "a-HVA-AHU-1",
+    "a-HVA-AHU-0",
+    "a-HVA-AHU-2",
+    "a-HVA-Chi-1",
+    "a-HVA-Chi-0",
+    "a-HVA-Chi-2",
+    "a-HVA-FCU-0",
+    "a-HVA-FCU-1",
+    "a-HVA-VAV-0"
+   ],
+   "assetCount": 9,
+   "readyCount": 3,
+   "ready": false,
+   "openIssues": 6,
+   "openForms": 3,
+   "warnings": 0
+  },
+  {
+   "name": "Fire Protection",
+   "assetIds": [
+    "a-Fir-Ala-0",
+    "a-Fir-Ala-1",
+    "a-Fir-Fir-0",
+    "a-Fir-Fir-1",
+    "a-Fir-Spr-2",
+    "a-Fir-Spr-3",
+    "a-Fir-Spr-0",
+    "a-Fir-Spr-1"
+   ],
+   "assetCount": 8,
+   "readyCount": 4,
+   "ready": false,
+   "openIssues": 2,
+   "openForms": 3,
+   "warnings": 2
+  },
+  {
+   "name": "Plumbing",
+   "assetIds": [
+    "a-Plu-Boo-2",
+    "a-Plu-Boo-1",
+    "a-Plu-Boo-0",
+    "a-Plu-Wat-1",
+    "a-Plu-Wat-3",
+    "a-Plu-Wat-0",
+    "a-Plu-Wat-2"
+   ],
+   "assetCount": 7,
+   "readyCount": 7,
+   "ready": true,
+   "openIssues": 0,
+   "openForms": 0,
+   "warnings": 0
+  },
+  {
+   "name": "Vertical Transport",
+   "assetIds": [
+    "a-Ver-Ele-0"
+   ],
+   "assetCount": 1,
+   "readyCount": 1,
+   "ready": true,
+   "openIssues": 0,
+   "openForms": 0,
+   "warnings": 0
+  }
+ ],
+ "assets": {
+  "a-HVA-AHU-0": {
+   "id": "a-HVA-AHU-0",
+   "name": "AHU-254",
+   "description": "AHU \u00b7 Level 7",
+   "category": "AHU",
+   "status": "Ordered",
+   "system": "HVAC",
+   "ready": true,
+   "blockers": 0,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-HVA-AHU-0-spec",
+     "label": "AHU submittal - Rev A.pdf",
+     "path": [
+      "AHU-254",
+      "AHU submittal - Rev A.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    }
+   ]
+  },
+  "a-HVA-AHU-1": {
+   "id": "a-HVA-AHU-1",
+   "name": "AHU-196",
+   "description": "AHU \u00b7 Level 6",
+   "category": "AHU",
+   "status": "Ordered",
+   "system": "HVAC",
+   "ready": false,
+   "blockers": 1,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-HVA-AHU-1-spec",
+     "label": "AHU submittal - Rev A.pdf",
+     "path": [
+      "AHU-196",
+      "AHU submittal - Rev A.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "form",
+     "id": "f1",
+     "label": "Form 1 Pre-functional checklist",
+     "path": [
+      "AHU-196",
+      "Form 1 Pre-functional checklist"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": null,
+     "type": "Commissioning"
+    },
+    {
+     "kind": "issue",
+     "id": "i1",
+     "label": "Issue #1 Insulation damaged",
+     "path": [
+      "AHU-196",
+      "AHU submittal - Rev A.pdf",
+      "Issue #1 Insulation damaged"
+     ],
+     "url": null,
+     "status": "open",
+     "state": "blocking",
+     "due": "2026-12-14",
+     "type": "Commissioning",
+     "assignee": null
+    }
+   ]
+  },
+  "a-HVA-AHU-2": {
+   "id": "a-HVA-AHU-2",
+   "name": "AHU-328",
+   "description": "AHU \u00b7 Level 11",
+   "category": "AHU",
+   "status": "Ordered",
+   "system": "HVAC",
+   "ready": true,
+   "blockers": 0,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-HVA-AHU-2-spec",
+     "label": "AHU submittal - Rev C.pdf",
+     "path": [
+      "AHU-328",
+      "AHU submittal - Rev C.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "form",
+     "id": "f2",
+     "label": "Form 2 Start-up form",
+     "path": [
+      "AHU-328",
+      "Form 2 Start-up form"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": null,
+     "type": "Commissioning"
+    }
+   ]
+  },
+  "a-HVA-FCU-0": {
+   "id": "a-HVA-FCU-0",
+   "name": "FCU-147",
+   "description": "FCU \u00b7 Level 9",
+   "category": "FCU",
+   "status": "Installed",
+   "system": "HVAC",
+   "ready": false,
+   "blockers": 1,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-HVA-FCU-0-spec",
+     "label": "FCU submittal - Rev B.pdf",
+     "path": [
+      "FCU-147",
+      "FCU submittal - Rev B.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "issue",
+     "id": "i3",
+     "label": "Issue #3 Cable tray clash",
+     "path": [
+      "FCU-147",
+      "Issue #3 Cable tray clash"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-09-18",
+     "type": "Commissioning",
+     "assignee": null
+    },
+    {
+     "kind": "issue",
+     "id": "i4",
+     "label": "Issue #4 O&M manual missing",
+     "path": [
+      "FCU-147",
+      "Issue #4 O&M manual missing"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-12-25",
+     "type": "Safety",
+     "assignee": null
+    },
+    {
+     "kind": "issue",
+     "id": "i2",
+     "label": "Issue #2 Insulation damaged",
+     "path": [
+      "FCU-147",
+      "FCU submittal - Rev B.pdf",
+      "Issue #2 Insulation damaged"
+     ],
+     "url": null,
+     "status": "in_review",
+     "state": "blocking",
+     "due": "2026-11-18",
+     "type": "Quality / Defect",
+     "assignee": null
+    }
+   ]
+  },
+  "a-HVA-FCU-1": {
+   "id": "a-HVA-FCU-1",
+   "name": "FCU-470",
+   "description": "FCU \u00b7 Level 5",
+   "category": "FCU",
+   "status": "Installed",
+   "system": "HVAC",
+   "ready": false,
+   "blockers": 1,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-HVA-FCU-1-spec",
+     "label": "FCU submittal - Rev A.pdf",
+     "path": [
+      "FCU-470",
+      "FCU submittal - Rev A.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "issue",
+     "id": "i5",
+     "label": "Issue #5 Access panel blocked",
+     "path": [
+      "FCU-470",
+      "FCU submittal - Rev A.pdf",
+      "Issue #5 Access panel blocked"
+     ],
+     "url": null,
+     "status": "in_progress",
+     "state": "blocking",
+     "due": "2026-12-11",
+     "type": "Documentation",
+     "assignee": null
+    }
+   ]
+  },
+  "a-HVA-VAV-0": {
+   "id": "a-HVA-VAV-0",
+   "name": "VAV-BOX-624",
+   "description": "VAV Box \u00b7 Level 7",
+   "category": "VAV Box",
+   "status": "Installed",
+   "system": "HVAC",
+   "ready": false,
+   "blockers": 2,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-HVA-VAV-0-spec",
+     "label": "VAV Box submittal - Rev B.pdf",
+     "path": [
+      "VAV-BOX-624",
+      "VAV Box submittal - Rev B.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "form",
+     "id": "f3",
+     "label": "Form 3 Start-up form",
+     "path": [
+      "VAV-BOX-624",
+      "Form 3 Start-up form"
+     ],
+     "url": null,
+     "status": "inProgress",
+     "state": "blocking",
+     "due": null,
+     "type": "Commissioning"
+    },
+    {
+     "kind": "issue",
+     "id": "i6",
+     "label": "Issue #6 Vibration out of tolerance",
+     "path": [
+      "VAV-BOX-624",
+      "Issue #6 Vibration out of tolerance"
+     ],
+     "url": null,
+     "status": "completed",
+     "state": "blocking",
+     "due": "2026-09-22",
+     "type": "Commissioning",
+     "assignee": null
+    }
+   ]
+  },
+  "a-HVA-Chi-0": {
+   "id": "a-HVA-Chi-0",
+   "name": "CHILLER-708",
+   "description": "Chiller \u00b7 Level 8",
+   "category": "Chiller",
+   "status": "Ordered",
+   "system": "HVAC",
+   "ready": true,
+   "blockers": 0,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-HVA-Chi-0-spec",
+     "label": "Chiller submittal - Rev B.pdf",
+     "path": [
+      "CHILLER-708",
+      "Chiller submittal - Rev B.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    }
+   ]
+  },
+  "a-HVA-Chi-1": {
+   "id": "a-HVA-Chi-1",
+   "name": "CHILLER-376",
+   "description": "Chiller \u00b7 Level 8",
+   "category": "Chiller",
+   "status": "Ordered",
+   "system": "HVAC",
+   "ready": false,
+   "blockers": 1,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-HVA-Chi-1-spec",
+     "label": "Chiller submittal - Rev C.pdf",
+     "path": [
+      "CHILLER-376",
+      "Chiller submittal - Rev C.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "form",
+     "id": "f4",
+     "label": "Form 4 Functional test",
+     "path": [
+      "CHILLER-376",
+      "Form 4 Functional test"
+     ],
+     "url": null,
+     "status": "inProgress",
+     "state": "blocking",
+     "due": null,
+     "type": "Commissioning"
+    }
+   ]
+  },
+  "a-HVA-Chi-2": {
+   "id": "a-HVA-Chi-2",
+   "name": "CHILLER-762",
+   "description": "Chiller \u00b7 Level 10",
+   "category": "Chiller",
+   "status": "Ordered",
+   "system": "HVAC",
+   "ready": false,
+   "blockers": 3,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-HVA-Chi-2-spec",
+     "label": "Chiller submittal - Rev B.pdf",
+     "path": [
+      "CHILLER-762",
+      "Chiller submittal - Rev B.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "form",
+     "id": "f5",
+     "label": "Form 5 Start-up form",
+     "path": [
+      "CHILLER-762",
+      "Form 5 Start-up form"
+     ],
+     "url": null,
+     "status": "inReview",
+     "state": "blocking",
+     "due": null,
+     "type": "Commissioning"
+    },
+    {
+     "kind": "issue",
+     "id": "i7",
+     "label": "Issue #7 Cable tray clash",
+     "path": [
+      "CHILLER-762",
+      "Chiller submittal - Rev B.pdf",
+      "Issue #7 Cable tray clash"
+     ],
+     "url": null,
+     "status": "pending",
+     "state": "blocking",
+     "due": "2026-09-15",
+     "type": "Safety",
+     "assignee": null
+    },
+    {
+     "kind": "issue",
+     "id": "i8",
+     "label": "Issue #8 O&M manual missing",
+     "path": [
+      "CHILLER-762",
+      "Chiller submittal - Rev B.pdf",
+      "Issue #8 O&M manual missing"
+     ],
+     "url": null,
+     "status": "in_progress",
+     "state": "blocking",
+     "due": "2026-09-07",
+     "type": "Safety",
+     "assignee": null
+    }
+   ]
+  },
+  "a-Ele-Swi-0": {
+   "id": "a-Ele-Swi-0",
+   "name": "SWITCHBOARD-270",
+   "description": "Switchboard \u00b7 Level 8",
+   "category": "Switchboard",
+   "status": "Commissioned",
+   "system": "Electrical",
+   "ready": false,
+   "blockers": 2,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Ele-Swi-0-spec",
+     "label": "Switchboard submittal - Rev C.pdf",
+     "path": [
+      "SWITCHBOARD-270",
+      "Switchboard submittal - Rev C.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "issue",
+     "id": "i9",
+     "label": "Issue #9 Vibration out of tolerance",
+     "path": [
+      "SWITCHBOARD-270",
+      "Issue #9 Vibration out of tolerance"
+     ],
+     "url": null,
+     "status": "in_review",
+     "state": "blocking",
+     "due": "2026-11-23",
+     "type": "Documentation",
+     "assignee": null
+    },
+    {
+     "kind": "issue",
+     "id": "i10",
+     "label": "Issue #10 Wrong model installed",
+     "path": [
+      "SWITCHBOARD-270",
+      "Switchboard submittal - Rev C.pdf",
+      "Issue #10 Wrong model installed"
+     ],
+     "url": null,
+     "status": "pending",
+     "state": "blocking",
+     "due": "2026-10-03",
+     "type": "Quality / Defect",
+     "assignee": null
+    }
+   ]
+  },
+  "a-Ele-Pan-0": {
+   "id": "a-Ele-Pan-0",
+   "name": "PANELBOARD-596",
+   "description": "Panelboard \u00b7 Level 10",
+   "category": "Panelboard",
+   "status": "Installed",
+   "system": "Electrical",
+   "ready": false,
+   "blockers": 2,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Ele-Pan-0-spec",
+     "label": "Panelboard submittal - Rev B.pdf",
+     "path": [
+      "PANELBOARD-596",
+      "Panelboard submittal - Rev B.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "form",
+     "id": "f6",
+     "label": "Form 6 Pre-functional checklist",
+     "path": [
+      "PANELBOARD-596",
+      "Form 6 Pre-functional checklist"
+     ],
+     "url": null,
+     "status": "inReview",
+     "state": "blocking",
+     "due": null,
+     "type": "Commissioning"
+    },
+    {
+     "kind": "issue",
+     "id": "i11",
+     "label": "Issue #11 Commissioning test failed",
+     "path": [
+      "PANELBOARD-596",
+      "Issue #11 Commissioning test failed"
+     ],
+     "url": null,
+     "status": "open",
+     "state": "blocking",
+     "due": "2026-12-18",
+     "type": "Safety",
+     "assignee": null
+    },
+    {
+     "kind": "issue",
+     "id": "i12",
+     "label": "Issue #12 Commissioning test failed",
+     "path": [
+      "PANELBOARD-596",
+      "Panelboard submittal - Rev B.pdf",
+      "Issue #12 Commissioning test failed"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-09-15",
+     "type": "Coordination",
+     "assignee": null
+    }
+   ]
+  },
+  "a-Ele-UPS-0": {
+   "id": "a-Ele-UPS-0",
+   "name": "UPS-163",
+   "description": "UPS \u00b7 Level 4",
+   "category": "UPS",
+   "status": "Installed",
+   "system": "Electrical",
+   "ready": false,
+   "blockers": 2,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Ele-UPS-0-spec",
+     "label": "UPS submittal - Rev A.pdf",
+     "path": [
+      "UPS-163",
+      "UPS submittal - Rev A.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "issue",
+     "id": "i15",
+     "label": "Issue #15 Vibration out of tolerance",
+     "path": [
+      "UPS-163",
+      "Issue #15 Vibration out of tolerance"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-10-21",
+     "type": "Safety",
+     "assignee": null
+    },
+    {
+     "kind": "issue",
+     "id": "i13",
+     "label": "Issue #13 Insulation damaged",
+     "path": [
+      "UPS-163",
+      "UPS submittal - Rev A.pdf",
+      "Issue #13 Insulation damaged"
+     ],
+     "url": null,
+     "status": "in_review",
+     "state": "blocking",
+     "due": "2026-11-20",
+     "type": "Commissioning",
+     "assignee": null
+    },
+    {
+     "kind": "issue",
+     "id": "i14",
+     "label": "Issue #14 Insulation damaged",
+     "path": [
+      "UPS-163",
+      "UPS submittal - Rev A.pdf",
+      "Issue #14 Insulation damaged"
+     ],
+     "url": null,
+     "status": "in_review",
+     "state": "blocking",
+     "due": "2026-11-20",
+     "type": "Commissioning",
+     "assignee": null
+    }
+   ]
+  },
+  "a-Ele-UPS-1": {
+   "id": "a-Ele-UPS-1",
+   "name": "UPS-585",
+   "description": "UPS \u00b7 Level 2",
+   "category": "UPS",
+   "status": "Installed",
+   "system": "Electrical",
+   "ready": false,
+   "blockers": 1,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Ele-UPS-1-spec",
+     "label": "UPS submittal - Rev B.pdf",
+     "path": [
+      "UPS-585",
+      "UPS submittal - Rev B.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "issue",
+     "id": "i17",
+     "label": "Issue #17 Access panel blocked",
+     "path": [
+      "UPS-585",
+      "Issue #17 Access panel blocked"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-12-27",
+     "type": "Quality / Defect",
+     "assignee": null
+    },
+    {
+     "kind": "issue",
+     "id": "i18",
+     "label": "Issue #18 Cable tray clash",
+     "path": [
+      "UPS-585",
+      "Issue #18 Cable tray clash"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-10-23",
+     "type": "Coordination",
+     "assignee": null
+    },
+    {
+     "kind": "issue",
+     "id": "i16",
+     "label": "Issue #16 O&M manual missing",
+     "path": [
+      "UPS-585",
+      "UPS submittal - Rev B.pdf",
+      "Issue #16 O&M manual missing"
+     ],
+     "url": null,
+     "status": "completed",
+     "state": "blocking",
+     "due": "2026-11-03",
+     "type": "Quality / Defect",
+     "assignee": null
+    }
+   ]
+  },
+  "a-Ele-UPS-2": {
+   "id": "a-Ele-UPS-2",
+   "name": "UPS-405",
+   "description": "UPS \u00b7 Level 11",
+   "category": "UPS",
+   "status": "Installed",
+   "system": "Electrical",
+   "ready": true,
+   "blockers": 0,
+   "warnings": 2,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Ele-UPS-2-spec",
+     "label": "UPS submittal - Rev C.pdf",
+     "path": [
+      "UPS-405",
+      "UPS submittal - Rev C.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "issue",
+     "id": "i19",
+     "label": "Issue #19 Cable tray clash",
+     "path": [
+      "UPS-405",
+      "Issue #19 Cable tray clash"
+     ],
+     "url": null,
+     "status": "draft",
+     "state": "warning",
+     "due": "2026-10-12",
+     "type": "Quality / Defect",
+     "assignee": null
+    },
+    {
+     "kind": "issue",
+     "id": "i20",
+     "label": "Issue #20 Cable tray clash",
+     "path": [
+      "UPS-405",
+      "Issue #20 Cable tray clash"
+     ],
+     "url": null,
+     "status": "draft",
+     "state": "warning",
+     "due": "2026-10-20",
+     "type": "Quality / Defect",
+     "assignee": null
+    }
+   ]
+  },
+  "a-Ele-UPS-3": {
+   "id": "a-Ele-UPS-3",
+   "name": "UPS-857",
+   "description": "UPS \u00b7 Level 4",
+   "category": "UPS",
+   "status": "Installed",
+   "system": "Electrical",
+   "ready": true,
+   "blockers": 0,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Ele-UPS-3-spec",
+     "label": "UPS submittal - Rev C.pdf",
+     "path": [
+      "UPS-857",
+      "UPS submittal - Rev C.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "form",
+     "id": "f7",
+     "label": "Form 7 Start-up form",
+     "path": [
+      "UPS-857",
+      "Form 7 Start-up form"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": null,
+     "type": "Commissioning"
+    },
+    {
+     "kind": "issue",
+     "id": "i21",
+     "label": "Issue #21 Missing label",
+     "path": [
+      "UPS-857",
+      "Issue #21 Missing label"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-09-26",
+     "type": "Safety",
+     "assignee": null
+    },
+    {
+     "kind": "issue",
+     "id": "i22",
+     "label": "Issue #22 Cable tray clash",
+     "path": [
+      "UPS-857",
+      "Issue #22 Cable tray clash"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-12-26",
+     "type": "Safety",
+     "assignee": null
+    },
+    {
+     "kind": "issue",
+     "id": "i23",
+     "label": "Issue #23 Insulation damaged",
+     "path": [
+      "UPS-857",
+      "Issue #23 Insulation damaged"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-10-04",
+     "type": "Quality / Defect",
+     "assignee": null
+    }
+   ]
+  },
+  "a-Fir-Spr-0": {
+   "id": "a-Fir-Spr-0",
+   "name": "SPRINKLER-RISER-768",
+   "description": "Sprinkler Riser \u00b7 Level 6",
+   "category": "Sprinkler Riser",
+   "status": "Ordered",
+   "system": "Fire Protection",
+   "ready": true,
+   "blockers": 0,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Fir-Spr-0-spec",
+     "label": "Sprinkler Riser submittal - Rev A.pdf",
+     "path": [
+      "SPRINKLER-RISER-768",
+      "Sprinkler Riser submittal - Rev A.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    }
+   ]
+  },
+  "a-Fir-Spr-1": {
+   "id": "a-Fir-Spr-1",
+   "name": "SPRINKLER-RISER-901",
+   "description": "Sprinkler Riser \u00b7 Level 12",
+   "category": "Sprinkler Riser",
+   "status": "Installed",
+   "system": "Fire Protection",
+   "ready": false,
+   "blockers": 1,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Fir-Spr-1-spec",
+     "label": "Sprinkler Riser submittal - Rev B.pdf",
+     "path": [
+      "SPRINKLER-RISER-901",
+      "Sprinkler Riser submittal - Rev B.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "issue",
+     "id": "i24",
+     "label": "Issue #24 Cable tray clash",
+     "path": [
+      "SPRINKLER-RISER-901",
+      "Issue #24 Cable tray clash"
+     ],
+     "url": null,
+     "status": "pending",
+     "state": "blocking",
+     "due": "2026-09-26",
+     "type": "Documentation",
+     "assignee": null
+    }
+   ]
+  },
+  "a-Fir-Spr-2": {
+   "id": "a-Fir-Spr-2",
+   "name": "SPRINKLER-RISER-186",
+   "description": "Sprinkler Riser \u00b7 Level 12",
+   "category": "Sprinkler Riser",
+   "status": "Installed",
+   "system": "Fire Protection",
+   "ready": false,
+   "blockers": 2,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Fir-Spr-2-spec",
+     "label": "Sprinkler Riser submittal - Rev A.pdf",
+     "path": [
+      "SPRINKLER-RISER-186",
+      "Sprinkler Riser submittal - Rev A.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "form",
+     "id": "f8",
+     "label": "Form 8 Start-up form",
+     "path": [
+      "SPRINKLER-RISER-186",
+      "Form 8 Start-up form"
+     ],
+     "url": null,
+     "status": "inProgress",
+     "state": "blocking",
+     "due": null,
+     "type": "Commissioning"
+    },
+    {
+     "kind": "issue",
+     "id": "i25",
+     "label": "Issue #25 Commissioning test failed",
+     "path": [
+      "SPRINKLER-RISER-186",
+      "Issue #25 Commissioning test failed"
+     ],
+     "url": null,
+     "status": "open",
+     "state": "blocking",
+     "due": "2026-12-26",
+     "type": "Quality / Defect",
+     "assignee": null
+    }
+   ]
+  },
+  "a-Fir-Spr-3": {
+   "id": "a-Fir-Spr-3",
+   "name": "SPRINKLER-RISER-259",
+   "description": "Sprinkler Riser \u00b7 Level 9",
+   "category": "Sprinkler Riser",
+   "status": "Ordered",
+   "system": "Fire Protection",
+   "ready": true,
+   "blockers": 0,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Fir-Spr-3-spec",
+     "label": "Sprinkler Riser submittal - Rev A.pdf",
+     "path": [
+      "SPRINKLER-RISER-259",
+      "Sprinkler Riser submittal - Rev A.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "form",
+     "id": "f9",
+     "label": "Form 9 Functional test",
+     "path": [
+      "SPRINKLER-RISER-259",
+      "Form 9 Functional test"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": null,
+     "type": "Commissioning"
+    }
+   ]
+  },
+  "a-Fir-Fir-0": {
+   "id": "a-Fir-Fir-0",
+   "name": "FIRE-PUMP-544",
+   "description": "Fire Pump \u00b7 Level 4",
+   "category": "Fire Pump",
+   "status": "Installed",
+   "system": "Fire Protection",
+   "ready": true,
+   "blockers": 0,
+   "warnings": 1,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Fir-Fir-0-spec",
+     "label": "Fire Pump submittal - Rev A.pdf",
+     "path": [
+      "FIRE-PUMP-544",
+      "Fire Pump submittal - Rev A.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "issue",
+     "id": "i27",
+     "label": "Issue #27 Vibration out of tolerance",
+     "path": [
+      "FIRE-PUMP-544",
+      "Issue #27 Vibration out of tolerance"
+     ],
+     "url": null,
+     "status": "draft",
+     "state": "warning",
+     "due": "2026-10-02",
+     "type": "Safety",
+     "assignee": null
+    },
+    {
+     "kind": "issue",
+     "id": "i26",
+     "label": "Issue #26 Access panel blocked",
+     "path": [
+      "FIRE-PUMP-544",
+      "Fire Pump submittal - Rev A.pdf",
+      "Issue #26 Access panel blocked"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-10-25",
+     "type": "Coordination",
+     "assignee": null
+    }
+   ]
+  },
+  "a-Fir-Fir-1": {
+   "id": "a-Fir-Fir-1",
+   "name": "FIRE-PUMP-934",
+   "description": "Fire Pump \u00b7 Level 9",
+   "category": "Fire Pump",
+   "status": "Commissioned",
+   "system": "Fire Protection",
+   "ready": true,
+   "blockers": 0,
+   "warnings": 1,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Fir-Fir-1-spec",
+     "label": "Fire Pump submittal - Rev C.pdf",
+     "path": [
+      "FIRE-PUMP-934",
+      "Fire Pump submittal - Rev C.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "issue",
+     "id": "i28",
+     "label": "Issue #28 Commissioning test failed",
+     "path": [
+      "FIRE-PUMP-934",
+      "Issue #28 Commissioning test failed"
+     ],
+     "url": null,
+     "status": "draft",
+     "state": "warning",
+     "due": "2026-09-28",
+     "type": "Documentation",
+     "assignee": null
+    }
+   ]
+  },
+  "a-Fir-Ala-0": {
+   "id": "a-Fir-Ala-0",
+   "name": "ALARM-PANEL-276",
+   "description": "Alarm Panel \u00b7 Level 3",
+   "category": "Alarm Panel",
+   "status": "Commissioned",
+   "system": "Fire Protection",
+   "ready": false,
+   "blockers": 1,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Fir-Ala-0-spec",
+     "label": "Alarm Panel submittal - Rev C.pdf",
+     "path": [
+      "ALARM-PANEL-276",
+      "Alarm Panel submittal - Rev C.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "form",
+     "id": "f10",
+     "label": "Form 10 Start-up form",
+     "path": [
+      "ALARM-PANEL-276",
+      "Form 10 Start-up form"
+     ],
+     "url": null,
+     "status": "inReview",
+     "state": "blocking",
+     "due": null,
+     "type": "Commissioning"
+    }
+   ]
+  },
+  "a-Fir-Ala-1": {
+   "id": "a-Fir-Ala-1",
+   "name": "ALARM-PANEL-903",
+   "description": "Alarm Panel \u00b7 Level 2",
+   "category": "Alarm Panel",
+   "status": "Ordered",
+   "system": "Fire Protection",
+   "ready": false,
+   "blockers": 1,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Fir-Ala-1-spec",
+     "label": "Alarm Panel submittal - Rev A.pdf",
+     "path": [
+      "ALARM-PANEL-903",
+      "Alarm Panel submittal - Rev A.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "form",
+     "id": "f11",
+     "label": "Form 11 Pre-functional checklist",
+     "path": [
+      "ALARM-PANEL-903",
+      "Form 11 Pre-functional checklist"
+     ],
+     "url": null,
+     "status": "inReview",
+     "state": "blocking",
+     "due": null,
+     "type": "Commissioning"
+    },
+    {
+     "kind": "issue",
+     "id": "i29",
+     "label": "Issue #29 Access panel blocked",
+     "path": [
+      "ALARM-PANEL-903",
+      "Issue #29 Access panel blocked"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-09-25",
+     "type": "Commissioning",
+     "assignee": null
+    }
+   ]
+  },
+  "a-Plu-Boo-0": {
+   "id": "a-Plu-Boo-0",
+   "name": "BOOSTER-PUMP-727",
+   "description": "Booster Pump \u00b7 Level 9",
+   "category": "Booster Pump",
+   "status": "Ordered",
+   "system": "Plumbing",
+   "ready": true,
+   "blockers": 0,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Plu-Boo-0-spec",
+     "label": "Booster Pump submittal - Rev C.pdf",
+     "path": [
+      "BOOSTER-PUMP-727",
+      "Booster Pump submittal - Rev C.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "issue",
+     "id": "i30",
+     "label": "Issue #30 O&M manual missing",
+     "path": [
+      "BOOSTER-PUMP-727",
+      "Issue #30 O&M manual missing"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-12-17",
+     "type": "Quality / Defect",
+     "assignee": null
+    }
+   ]
+  },
+  "a-Plu-Boo-1": {
+   "id": "a-Plu-Boo-1",
+   "name": "BOOSTER-PUMP-365",
+   "description": "Booster Pump \u00b7 Level 9",
+   "category": "Booster Pump",
+   "status": "Installed",
+   "system": "Plumbing",
+   "ready": true,
+   "blockers": 0,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Plu-Boo-1-spec",
+     "label": "Booster Pump submittal - Rev B.pdf",
+     "path": [
+      "BOOSTER-PUMP-365",
+      "Booster Pump submittal - Rev B.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "form",
+     "id": "f12",
+     "label": "Form 12 Pre-functional checklist",
+     "path": [
+      "BOOSTER-PUMP-365",
+      "Form 12 Pre-functional checklist"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": null,
+     "type": "Commissioning"
+    },
+    {
+     "kind": "issue",
+     "id": "i31",
+     "label": "Issue #31 Insulation damaged",
+     "path": [
+      "BOOSTER-PUMP-365",
+      "Booster Pump submittal - Rev B.pdf",
+      "Issue #31 Insulation damaged"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-12-15",
+     "type": "Safety",
+     "assignee": null
+    }
+   ]
+  },
+  "a-Plu-Boo-2": {
+   "id": "a-Plu-Boo-2",
+   "name": "BOOSTER-PUMP-317",
+   "description": "Booster Pump \u00b7 Level 11",
+   "category": "Booster Pump",
+   "status": "Commissioned",
+   "system": "Plumbing",
+   "ready": true,
+   "blockers": 0,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Plu-Boo-2-spec",
+     "label": "Booster Pump submittal - Rev A.pdf",
+     "path": [
+      "BOOSTER-PUMP-317",
+      "Booster Pump submittal - Rev A.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "issue",
+     "id": "i32",
+     "label": "Issue #32 Commissioning test failed",
+     "path": [
+      "BOOSTER-PUMP-317",
+      "Booster Pump submittal - Rev A.pdf",
+      "Issue #32 Commissioning test failed"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-11-05",
+     "type": "Documentation",
+     "assignee": null
+    }
+   ]
+  },
+  "a-Plu-Wat-0": {
+   "id": "a-Plu-Wat-0",
+   "name": "WATER-HEATER-598",
+   "description": "Water Heater \u00b7 Level 3",
+   "category": "Water Heater",
+   "status": "Ordered",
+   "system": "Plumbing",
+   "ready": true,
+   "blockers": 0,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Plu-Wat-0-spec",
+     "label": "Water Heater submittal - Rev A.pdf",
+     "path": [
+      "WATER-HEATER-598",
+      "Water Heater submittal - Rev A.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "form",
+     "id": "f13",
+     "label": "Form 13 Start-up form",
+     "path": [
+      "WATER-HEATER-598",
+      "Form 13 Start-up form"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": null,
+     "type": "Commissioning"
+    },
+    {
+     "kind": "issue",
+     "id": "i33",
+     "label": "Issue #33 Vibration out of tolerance",
+     "path": [
+      "WATER-HEATER-598",
+      "Water Heater submittal - Rev A.pdf",
+      "Issue #33 Vibration out of tolerance"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-11-14",
+     "type": "Quality / Defect",
+     "assignee": null
+    }
+   ]
+  },
+  "a-Plu-Wat-1": {
+   "id": "a-Plu-Wat-1",
+   "name": "WATER-HEATER-119",
+   "description": "Water Heater \u00b7 Level 6",
+   "category": "Water Heater",
+   "status": "Ordered",
+   "system": "Plumbing",
+   "ready": true,
+   "blockers": 0,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Plu-Wat-1-spec",
+     "label": "Water Heater submittal - Rev B.pdf",
+     "path": [
+      "WATER-HEATER-119",
+      "Water Heater submittal - Rev B.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "issue",
+     "id": "i36",
+     "label": "Issue #36 Commissioning test failed",
+     "path": [
+      "WATER-HEATER-119",
+      "Issue #36 Commissioning test failed"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-11-25",
+     "type": "Quality / Defect",
+     "assignee": null
+    },
+    {
+     "kind": "issue",
+     "id": "i34",
+     "label": "Issue #34 Vibration out of tolerance",
+     "path": [
+      "WATER-HEATER-119",
+      "Water Heater submittal - Rev B.pdf",
+      "Issue #34 Vibration out of tolerance"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-11-17",
+     "type": "Coordination",
+     "assignee": null
+    },
+    {
+     "kind": "issue",
+     "id": "i35",
+     "label": "Issue #35 Insulation damaged",
+     "path": [
+      "WATER-HEATER-119",
+      "Water Heater submittal - Rev B.pdf",
+      "Issue #35 Insulation damaged"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-10-04",
+     "type": "Commissioning",
+     "assignee": null
+    }
+   ]
+  },
+  "a-Plu-Wat-2": {
+   "id": "a-Plu-Wat-2",
+   "name": "WATER-HEATER-792",
+   "description": "Water Heater \u00b7 Level 5",
+   "category": "Water Heater",
+   "status": "Commissioned",
+   "system": "Plumbing",
+   "ready": true,
+   "blockers": 0,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Plu-Wat-2-spec",
+     "label": "Water Heater submittal - Rev A.pdf",
+     "path": [
+      "WATER-HEATER-792",
+      "Water Heater submittal - Rev A.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "form",
+     "id": "f14",
+     "label": "Form 14 Functional test",
+     "path": [
+      "WATER-HEATER-792",
+      "Form 14 Functional test"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": null,
+     "type": "Commissioning"
+    },
+    {
+     "kind": "issue",
+     "id": "i37",
+     "label": "Issue #37 Insulation damaged",
+     "path": [
+      "WATER-HEATER-792",
+      "Issue #37 Insulation damaged"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-11-02",
+     "type": "Quality / Defect",
+     "assignee": null
+    },
+    {
+     "kind": "issue",
+     "id": "i38",
+     "label": "Issue #38 Access panel blocked",
+     "path": [
+      "WATER-HEATER-792",
+      "Issue #38 Access panel blocked"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-09-21",
+     "type": "Commissioning",
+     "assignee": null
+    },
+    {
+     "kind": "issue",
+     "id": "i39",
+     "label": "Issue #39 Wrong model installed",
+     "path": [
+      "WATER-HEATER-792",
+      "Issue #39 Wrong model installed"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-09-09",
+     "type": "Commissioning",
+     "assignee": null
+    }
+   ]
+  },
+  "a-Plu-Wat-3": {
+   "id": "a-Plu-Wat-3",
+   "name": "WATER-HEATER-527",
+   "description": "Water Heater \u00b7 Level 5",
+   "category": "Water Heater",
+   "status": "Ordered",
+   "system": "Plumbing",
+   "ready": true,
+   "blockers": 0,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Plu-Wat-3-spec",
+     "label": "Water Heater submittal - Rev A.pdf",
+     "path": [
+      "WATER-HEATER-527",
+      "Water Heater submittal - Rev A.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "form",
+     "id": "f15",
+     "label": "Form 15 Pre-functional checklist",
+     "path": [
+      "WATER-HEATER-527",
+      "Form 15 Pre-functional checklist"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": null,
+     "type": "Commissioning"
+    }
+   ]
+  },
+  "a-Ver-Ele-0": {
+   "id": "a-Ver-Ele-0",
+   "name": "ELEVATOR-265",
+   "description": "Elevator \u00b7 Level 5",
+   "category": "Elevator",
+   "status": "Installed",
+   "system": "Vertical Transport",
+   "ready": true,
+   "blockers": 0,
+   "warnings": 0,
+   "url": null,
+   "refs": [
+    {
+     "kind": "document",
+     "id": "urn:adsk.wipprod:dm.lineage:a-Ver-Ele-0-spec",
+     "label": "Elevator submittal - Rev A.pdf",
+     "path": [
+      "ELEVATOR-265",
+      "Elevator submittal - Rev A.pdf"
+     ],
+     "url": null,
+     "status": null,
+     "state": "ok"
+    },
+    {
+     "kind": "form",
+     "id": "f16",
+     "label": "Form 16 Start-up form",
+     "path": [
+      "ELEVATOR-265",
+      "Form 16 Start-up form"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": null,
+     "type": "Commissioning"
+    },
+    {
+     "kind": "issue",
+     "id": "i40",
+     "label": "Issue #40 Access panel blocked",
+     "path": [
+      "ELEVATOR-265",
+      "Issue #40 Access panel blocked"
+     ],
+     "url": null,
+     "status": "closed",
+     "state": "ok",
+     "due": "2026-10-10",
+     "type": "Documentation",
+     "assignee": null
+    }
+   ]
+  }
+ },
+ "topology": {
+  "feeds": [
+   [
+    "Electrical",
+    "HVAC"
+   ],
+   [
+    "Electrical",
+    "Fire Protection"
+   ],
+   [
+    "Electrical",
+    "Vertical Transport"
+   ],
+   [
+    "Plumbing",
+    "Fire Protection"
+   ],
+   [
+    "HVAC",
+    "Vertical Transport"
+   ]
+  ],
+  "unmatched": [],
+  "placeholder": false,
+  "source": "systems.json"
+ },
+ "history": [
+  {
+   "date": "2026-10-01T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "33",
+   "openForms": "19",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-02T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "32",
+   "openForms": "17",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-03T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "33",
+   "openForms": "18",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-04T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "29",
+   "openForms": "17",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-05T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "28",
+   "openForms": "16",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-06T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "29",
+   "openForms": "16",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-07T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "27",
+   "openForms": "14",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-08T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "28",
+   "openForms": "15",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-09T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "27",
+   "openForms": "14",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-10T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "24",
+   "openForms": "12",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-11T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "24",
+   "openForms": "14",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-12T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "25",
+   "openForms": "13",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-13T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "21",
+   "openForms": "13",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-14T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "20",
+   "openForms": "10",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-15T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "19",
+   "openForms": "11",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-16T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "18",
+   "openForms": "10",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-17T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "20",
+   "openForms": "11",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-18T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "19",
+   "openForms": "10",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-19T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "18",
+   "openForms": "9",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-20T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "17",
+   "openForms": "7",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  },
+  {
+   "date": "2026-10-21T18:19:49",
+   "systems": "5",
+   "systemsReady": "2",
+   "assets": "31",
+   "assetsReady": "17",
+   "openIssues": "14",
+   "openForms": "7",
+   "unlinkedOpenIssues": "5",
+   "totalIssues": "45",
+   "totalForms": "16"
+  }
+ ]
+}

@@ -1,0 +1,9 @@
+{
+  "_comment": "Which systems must be ready BEFORE which others. Each pair is [upstream, downstream]. Names must match the dashboard's system names exactly. Systems not listed appear as independent. After editing run: python fomo1.py render --open",
+  "placeholder": true,
+  "feeds": [
+    ["Electrical", "HVAC"],
+    ["Electrical", "Fire Protection"],
+    ["HVAC", "Vertical Transport"]
+  ]
+}
