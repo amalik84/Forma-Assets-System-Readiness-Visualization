@@ -41,6 +41,18 @@ Inspired by a concept mock-up (a static demo with illustrative data and images).
 - Asset to element matching: by name. Forma asset names created from a model are the element names (`Door - Interior - Double [1263119]`). Demo project A with Arch_demo v28 + MEP-central v6 + Struc v2: **2,032 of 6,516 assets** found; B10: 126 of 257.
 - Several copies of each model exist in the project. We picked the copies most linked to issues and assets. Three Struc_demo copies failed translation in Forma.
 
+## Power BI version (2026-10-23)
+
+Same results as the web dashboard, for teams that work in Power BI. Checked on Demo project B: numbers match the web dashboard (3 systems not ready; 19 open issues and 6 open forms linked; 25 blocking items by phase).
+
+- `src/export_powerbi.py` (last step of `refresh.ps1`) writes `data/powerbi/`: `systems.csv`, `assets.csv`, `references.csv` (one row per asset and linked item, with state, phase, why linked, Forma link), `lifecycle.csv`, `meta.csv`.
+- On first run it creates `data/powerbi/Forma System Readiness.pbip` with `src/powerbi_project.py`: Power BI Project format (TMDL semantic model, PBIR-Legacy `report.json`), so it is text and generated, not a binary `.pbix`. The data folder path is filled in per machine. Later runs keep the user's report edits; `--rebuild-project` regenerates it.
+- Model: Systems 1-* Assets 1-* References, Assets *-1 Lifecycle. Measures: systems total / ready / not ready / unknown, asset count, linked items, blocking items, open issues and forms linked, and colour measures for the status cells.
+- Report: Overview (header band, six black tiles, systems table with readiness colours, blocking items per system), Assets and lifecycle (slicers, assets per lifecycle step with a lifecycle set dropdown, asset table with Forma links), Blocking items (state, phase and system slicers, blocking items per phase, every linked item with why it is linked).
+- Look: custom theme `AutodeskReadiness.json` (warm slate page, white panels, black header and tiles, tertiary colours for status only, Segoe UI because Artifakt is not available to Power BI). Base theme `CY24SU10` is copied from the local Power BI Desktop install, not stored in the repo.
+- `powerbi_refresh.ps1` refreshes the open project through Power BI Desktop's local engine (localhost only), so no click is needed. `refresh.ps1` calls it when the project is open.
+- Not in Power BI: the 3D viewer and the relationship graph (would need custom visuals).
+
 ### Not done yet
 
 - GIS map (the concept's second viewer): Forma holds no geolocation for assets. Issues have `gpsCoordinates`; could be a later option.

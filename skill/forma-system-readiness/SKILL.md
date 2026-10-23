@@ -44,6 +44,8 @@ cd <project folder>
 .\serve.ps1       # http://127.0.0.1:8765 with the live viewer; Ctrl+C stops it
 ```
 
+Power BI: `refresh.ps1` also writes `data\powerbi\` (CSV tables plus, on first run, `Forma System Readiness.pbip`). Open the `.pbip` in Power BI Desktop and refresh once (or `.\powerbi_refresh.ps1`); after that `refresh.ps1` refreshes the open project itself. `py src\export_powerbi.py --rebuild-project` regenerates the report (replaces the user's edits). The 3D viewer and graph exist only in the web dashboard.
+
 Expired login ("Re-login needed", or no run for about 15 days): `py src\auth.py login`, user signs in, refresh again. Scripts blocked by policy: `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`.
 
 **Switch to another project**, in this order:

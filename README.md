@@ -10,6 +10,7 @@ Work in progress, shared as is. Not an official Autodesk product and not support
 - **Lifecycle band:** linked items per phase (Design, Execution, Handover and operations) and where the assets are in their Forma status set.
 - **Relationship graph** around the selected asset.
 - **Live 3D viewer** (APS Viewer): the selected asset or system coloured by readiness in the project's models.
+- **Power BI version** of the same results (three report pages, refreshed with the rest), for teams that work in Power BI.
 - Daily refresh is a plain Python script, **no AI** at runtime. Python standard library only, no `pip install`.
 
 ## Repository layout
@@ -19,6 +20,7 @@ Work in progress, shared as is. Not an official Autodesk product and not support
 | `src/` | Python pipeline: login (`auth.py`), fetch (`fetch/`), graph and readiness (`model.py`, `readiness.py`), dashboard (`render.py`), local server for the viewer (`serve.py`) |
 | `templates/dashboard.html` | Dashboard page; `render.py` embeds the data |
 | `refresh.ps1`, `serve.ps1` | Refresh everything, and serve the dashboard on http://127.0.0.1:8765 |
+| `src/export_powerbi.py`, `src/powerbi_project.py`, `powerbi_refresh.ps1` | Power BI tables and project in `data/powerbi/`, and a no-click refresh of the open project |
 | `src/survey.py` | Helps choose `SYSTEM_ATTRIBUTE` and `VIEWER_MODELS` for a new project |
 | `GETTING_STARTED.md` | Step-by-step guide for new users |
 | `CONTRIBUTING.md`, `LICENSE` | How to suggest improvements; MIT-0 licence |

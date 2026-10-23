@@ -58,6 +58,8 @@ forma-system-readiness/
     render.py               write data.json and index.html
     lifecycle.py            phase of each reference (design / execution / handover)
     serve.py                local server for the dashboard + token for the live viewer
+    export_powerbi.py       readiness as Power BI tables (data/powerbi/*.csv) + project on first run
+    powerbi_project.py      generates the Power BI project: TMDL model, measures, theme, 3 report pages
     run_daily.py            entry point for the scheduled job
   templates/dashboard.html  page template; render.py embeds the data
   assets/fonts/             Artifakt fonts for the dashboard

@@ -18,7 +18,8 @@ $steps = @(
     "src\fetch\documents.py",
     "src\fetch\models.py",
     "src\readiness.py",
-    "src\render.py"
+    "src\render.py",
+    "src\export_powerbi.py"
 )
 
 $started = Get-Date
@@ -30,5 +31,10 @@ foreach ($step in $steps) {
         exit $LASTEXITCODE
     }
 }
+# If the Power BI project is open, load the new data into it too.
+if (Get-Process PBIDesktop -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowTitle -like "Forma System Readiness*" }) {
+    Write-Host "== Power BI" -ForegroundColor Cyan
+    & "$PSScriptRoot\powerbi_refresh.ps1"
+}
 $seconds = [int]((Get-Date) - $started).TotalSeconds
-Write-Host "Refresh done in $seconds s (snapshot $env:SNAPSHOT_DAY). Open the dashboard with .\serve.ps1" -ForegroundColor Green
+Write-Host "Refresh done in $seconds s (snapshot $env:SNAPSHOT_DAY). Open the dashboard with .\serve.ps1, or data\powerbi\Forma System Readiness.pbip in Power BI Desktop" -ForegroundColor Green

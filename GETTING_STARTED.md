@@ -103,6 +103,18 @@ It shows which systems have matchable asset names and the most-linked viewable m
 ```
 Select a system. The line under the viewer says how many of its assets were found, and how many assets each model contains. Remove the models that contain none from `VIEWER_MODELS`, and refresh once more.
 
+## 7b. Optional: the same results in Power BI
+
+Every `.\refresh.ps1` also writes the results as Power BI tables to `data\powerbi\`. The first time, it also creates a Power BI project there.
+
+1. Install Power BI Desktop (free, from Microsoft) if you do not have it.
+2. Open `data\powerbi\Forma System Readiness.pbip` in Power BI Desktop.
+3. The first time, click **Refresh now** in the yellow bar (or run `.\powerbi_refresh.ps1`) to load the data.
+
+**Success:** three pages (Overview, Assets and lifecycle, Blocking items) with the same numbers as the web dashboard. After that, `.\refresh.ps1` also updates Power BI whenever the project is open. The 3D viewer and the relationship graph stay in the web dashboard: Power BI has no built-in visuals for them.
+
+Your own changes to the report are kept. To get a newer report version from the repository, run `py src\export_powerbi.py --rebuild-project` (this replaces your changes), then refresh.
+
 ## 8. Day to day
 
 - `.\refresh.ps1` whenever you want fresh data, then `.\serve.ps1` to look at it.
