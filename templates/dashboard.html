@@ -69,6 +69,9 @@
                 display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; position: sticky; top: 0; z-index: 1; }
   .group-head .name { font-family: "Artifakt Legend", Arial, sans-serif; font-weight: 700; font-size: 13px; }
   #systems .row .subs { grid-column: 1 / -1; font-weight: 600; }
+  #systems .row.cat { background: var(--warm-slate-100); }
+  #systems .row.cat .name { font-family: "Artifakt Legend", Arial, sans-serif; }
+  #systems .row.cat.sel { background: var(--black); }
   .small { color: var(--slate); font-size: 12px; overflow-wrap: anywhere; }
   .more { padding: 10px 14px; color: var(--slate); }
   .more button { background: none; border: 1px solid var(--black); border-radius: 4px; padding: 4px 12px; }
@@ -286,28 +289,33 @@ function header() {
 /* System tree: nested Forma systems arrive as "Parent > Child". Parents roll up their sub-systems
    (status, counts, assets), and sub-systems are only shown under a selected system. */
 const SEP = " > ";
+/* System tree. With Forma Systems the top level is the system category (Battery storage, ...),
+   then systems, then systems nested in systems ("Parent > Child"). Everything starts collapsed:
+   selecting a node opens its children. Parent nodes roll up their children (status, counts, assets). */
 function buildSystemTree() {
-  const byId = new Map(D.systems.map(s => [s.id, s]));
+  const byPath = new Map();
+  D.systems.forEach(s => { s.path = (s.group ? s.group + SEP : "") + s.name; byPath.set(s.path, s); });
   D.systems.slice().forEach(s => {
-    const parts = s.name.split(SEP);
+    const parts = s.path.split(SEP);
     for (let i = 1; i < parts.length; i++) {
-      const pid = parts.slice(0, i).join(SEP);
-      if (!byId.has(pid)) {  // a parent with no assets of its own still needs a row
-        const p = { id: pid, name: pid, assetIds: [], isUnassigned: false, group: s.group, synthetic: true };
-        byId.set(pid, p); D.systems.push(p);
+      const pp = parts.slice(0, i).join(SEP);
+      if (!byPath.has(pp)) {  // a category, or a parent system with no assets of its own
+        const node = { id: "node:" + pp, path: pp, name: pp, assetIds: [], isUnassigned: false, synthetic: true,
+                       isCategory: i === 1 && !!s.group, group: s.group };
+        byPath.set(pp, node); D.systems.push(node);
       }
     }
   });
   D.systems.forEach(s => {
-    const parts = s.name.split(SEP);
+    const parts = s.path.split(SEP);
     Object.assign(s, { depth: parts.length - 1, label: parts[parts.length - 1], children: [], ownAssetIds: s.assetIds,
-                       parentId: parts.length > 1 ? parts.slice(0, -1).join(SEP) : null });
+                       parentPath: parts.length > 1 ? parts.slice(0, -1).join(SEP) : null });
   });
-  D.systems.forEach(s => { if (s.parentId) byId.get(s.parentId).children.push(s.id); });
-  const allAssets = id => { const s = byId.get(id); return [...s.ownAssetIds, ...s.children.flatMap(allAssets)]; };
+  D.systems.forEach(s => { if (s.parentPath) byPath.get(s.parentPath).children.push(s); });
+  const allAssets = n => [...n.ownAssetIds, ...n.children.flatMap(allAssets)];
   D.systems.forEach(s => {
     if (!s.children.length) return;
-    const as = [...new Set(allAssets(s.id))].map(i => assetsById[i]).filter(Boolean);
+    const as = [...new Set(allAssets(s))].map(i => assetsById[i]).filter(Boolean);
     Object.assign(s, {
       assetIds: as.map(a => a.id), assetCount: as.length,
       assetsNotReady: as.filter(a => a.status === "not_ready").length,
@@ -317,51 +325,37 @@ function buildSystemTree() {
     });
     s.status = s.assetsNotReady ? "not_ready" : s.assetsUnknown ? "unknown" : "ready";
   });
-  return byId;
+  return byPath;
 }
-const systemsById = buildSystemTree();
-const descendantCount = s => s.children.reduce((n, id) => n + 1 + descendantCount(systemsById.get(id)), 0);
-const isOpen = s => state.system === s.id || (state.system || "").startsWith(s.id + SEP);
+const systemsByPath = buildSystemTree();
+const selectedPath = () => (D.systems.find(x => x.id === state.system) || {}).path || "";
+const isOpen = s => selectedPath() === s.path || selectedPath().startsWith(s.path + SEP);
 const bySeverity = (a, b) => (ORDER[a.status] - ORDER[b.status]) || a.label.localeCompare(b.label);
+const realSystems = n => n.children.reduce((c, k) => c + (k.synthetic ? 0 : 1) + realSystems(k), 0);
 
 function renderSystems() {
   const q = $("sysSearch").value.trim().toLowerCase();
-  if (q) {  // search: flat list with full paths, so a sub-system can be found directly
-    const hits = D.systems.filter(s => s.name.toLowerCase().includes(q) || (s.group || "").toLowerCase().includes(q)).sort(bySeverity);
+  if (q) {  // search: flat list with full paths, so any system can be found directly
+    const hits = D.systems.filter(s => s.path.toLowerCase().includes(q)).sort(bySeverity);
     $("systems").innerHTML = hits.map(s => systemRow(s, 0, true)).join("") || `<div class="empty">No systems match.</div>`;
     return;
   }
-  const tops = D.systems.filter(s => s.depth === 0);
   const branch = (s, depth) => systemRow(s, depth) +
-    (isOpen(s) ? s.children.map(id => systemsById.get(id)).sort(bySeverity).map(c => branch(c, depth + 1)).join("") : "");
-  // Forma system categories (Data Connector) become group headers with a combined status.
-  const groups = [...new Set(tops.map(s => s.group || ""))];
-  if (!(groups.length > 1 || groups[0] !== "")) {
-    $("systems").innerHTML = tops.sort(bySeverity).map(s => branch(s, 0)).join("") || `<div class="empty">No systems.</div>`;
-    return;
-  }
-  const members = g => tops.filter(s => (s.group || "") === g);
-  const worst = g => members(g).map(s => s.status).sort((a, b) => ORDER[a] - ORDER[b])[0];
-  const header = g => {
-    const m = members(g), notReady = m.filter(s => s.status === "not_ready").length;
-    const subs = m.reduce((n, s) => n + descendantCount(s), 0);
-    return `<div class="group-head"><div><div class="name">${esc(g || "Other systems")}</div>
-      <div class="small">${plural(m.length, "system")}${subs ? ` · ${plural(subs, "sub-system")}` : ""}${notReady ? ` · ${notReady} not ready` : ""}</div></div>${pill(worst(g))}</div>`;
-  };
-  $("systems").innerHTML = groups.sort((a, b) => (!a) - (!b) || ORDER[worst(a)] - ORDER[worst(b)] || a.localeCompare(b))
-    .map(g => header(g) + members(g).sort(bySeverity).map(s => branch(s, 0)).join("")).join("");
+    (isOpen(s) ? s.children.slice().sort(bySeverity).map(c => branch(c, depth + 1)).join("") : "");
+  const tops = D.systems.filter(s => s.depth === 0).sort((a, b) => (!!b.isCategory - !!a.isCategory) || bySeverity(a, b));
+  $("systems").innerHTML = tops.map(s => branch(s, 0)).join("") || `<div class="empty">No systems.</div>`;
   const sel = $("systems").querySelector(".row.sel");
-  if (sel) sel.scrollIntoView({ block: "nearest" });  // keep the selected (sub-)system in view
+  if (sel) sel.scrollIntoView({ block: "nearest" });  // keep the selection in view
 }
 
 function systemRow(s, depth, fullPath) {
   const linkNote = s.assetsWithReferences === 0 ? " · no links at all" : ` · ${fmt(s.assetsWithReferences)} with links`;
   const detail = s.status === "ready" || s.status === "unassigned" ? plural(s.assetCount, "asset") + linkNote
     : `${plural(s.blockingCount, "blocking item")} · ${s.assetsNotReady} not ready of ${s.assetCount}`;
-  const subs = s.children.length && !fullPath
-    ? `<div class="small subs">${isOpen(s) ? "▾" : "▸"} ${plural(s.children.length, "sub-system")}</div>` : "";
-  return `<div class="row ${state.system === s.id ? "sel" : ""}" data-id="${esc(s.id)}" tabindex="0" style="padding-left:${24 + depth * 18}px">
-    <div class="name">${esc(fullPath ? s.name : s.label)}</div>${pill(s.status)}<div class="small">${esc(detail)}</div>${subs}</div>`;
+  const kids = s.isCategory ? plural(realSystems(s), "system") : plural(s.children.length, "sub-system");
+  const toggle = s.children.length && !fullPath ? `<div class="small subs">${isOpen(s) ? "▾" : "▸"} ${kids}</div>` : "";
+  return `<div class="row ${s.isCategory ? "cat" : ""} ${state.system === s.id ? "sel" : ""}" data-id="${esc(s.id)}" tabindex="0" style="padding-left:${14 + depth * 18}px">
+    <div class="name">${esc(fullPath ? s.path : s.label)}</div>${pill(s.status)}<div class="small">${esc(detail)}</div>${toggle}</div>`;
 }
 
 const currentSystem = () => D.systems.find(x => x.id === state.system);
