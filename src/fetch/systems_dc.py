@@ -57,35 +57,45 @@ def _save_state(state):
 
 # ---------- request and jobs ----------
 
-def find_or_create_request(state):
-    """Reuse our recurring request; find it by description if the state file is gone; create it once otherwise."""
-    if state.get("requestId"):
-        return state["requestId"]
-    wanted = DESCRIPTION.format(config.PROJECT_ID)
-    for r in aps_client.get_json(f"{_base()}/requests", {"limit": 100}).get("results", []):
-        if r.get("description") == wanted and r.get("isActive"):
-            return r["id"]
+def create_request(schedule, description):
+    """POST one Data Connector request: assets service group only, this project only."""
     now = datetime.now(timezone.utc) + timedelta(minutes=1)  # the API rejects a start in the past
-    body = {
-        "description": wanted,
-        "isActive": True,
-        "scheduleInterval": "DAY",
-        "reoccuringInterval": 1,
-        "effectiveFrom": now.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
-        "effectiveTo": (now + timedelta(days=365)).strftime("%Y-%m-%dT%H:%M:%S.000Z"),
-        "serviceGroups": ["assets"],
-        "projectIdList": [config.PROJECT_ID],
-    }
+    body = {"description": description, "isActive": True, "scheduleInterval": schedule,
+            "effectiveFrom": now.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+            "serviceGroups": ["assets"], "projectIdList": [config.PROJECT_ID]}
+    if schedule != "ONE_TIME":
+        body["reoccuringInterval"] = 1
+        body["effectiveTo"] = (now + timedelta(days=365)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
     try:
-        created = aps_client.post_json(f"{_base()}/requests", body)
+        return aps_client.post_json(f"{_base()}/requests", body)["id"]
     except aps_client.ApiError as e:
         if e.status in (401, 403):
             raise SystemExit(
                 f"Data Connector refused to create the request ({e.status}). Check that APS_SCOPES includes "
                 "data:create (then run py src\\auth.py login again) and that your Forma role may use the Data Connector.")
         raise
+
+
+def find_or_create_request(state):
+    """Reuse our recurring daily request; find it by description if the state file is gone; create it once otherwise."""
+    if state.get("requestId"):
+        return state["requestId"]
+    wanted = DESCRIPTION.format(config.PROJECT_ID)
+    for r in aps_client.get_json(f"{_base()}/requests", {"limit": 100}).get("results", []):
+        if r.get("description") == wanted and r.get("isActive") and r.get("scheduleInterval") != "ONE_TIME":
+            return r["id"]
+    request_id = create_request("DAY", wanted)
     print("  created a daily Data Connector request (assets only, this project)")
-    return created["id"]
+    return request_id
+
+
+def all_jobs(state):
+    """Jobs of the daily request plus the one-off start request, newest first."""
+    found = []
+    for rid in (state.get("requestId"), state.get("startRequestId")):
+        if rid:
+            found += jobs(rid)
+    return sorted(found, key=lambda j: j.get("createdAt") or "", reverse=True)
 
 
 def jobs(request_id):
@@ -174,9 +184,19 @@ def fetch():
 
     deadline = time.time() + wait_minutes * 60
     while True:
-        job_list = jobs(request_id)
+        job_list = all_jobs(state)
         job, fresh = pick_job(job_list, max_age)
-        if fresh or not any(is_running(j) for j in job_list) or time.time() > deadline:
+        if fresh:
+            break
+        running = any(is_running(j) for j in job_list)
+        if not job and not running and not state.get("startRequestId"):
+            # The daily request runs on Autodesk's schedule; a one-off request runs now, so the first
+            # refresh does not wait a day. Created at most once.
+            state["startRequestId"] = create_request("ONE_TIME", DESCRIPTION.format(config.PROJECT_ID) + " (first run)")
+            _save_state(state)
+            print("  started a one-off Data Connector extract so the first refresh does not wait for the daily run")
+            running = True
+        if time.time() > deadline or (not running and job):
             break
         print("  waiting for the Data Connector job to finish...")
         time.sleep(30)
