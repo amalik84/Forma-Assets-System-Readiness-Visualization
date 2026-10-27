@@ -69,9 +69,17 @@
                 display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; position: sticky; top: 0; z-index: 1; }
   .group-head .name { font-family: "Artifakt Legend", Arial, sans-serif; font-weight: 700; font-size: 13px; }
   #systems .row .subs { grid-column: 1 / -1; font-weight: 600; }
-  #systems .row.cat { background: var(--warm-slate-100); }
-  #systems .row.cat .name { font-family: "Artifakt Legend", Arial, sans-serif; }
-  #systems .row.cat.sel { background: var(--black); }
+  /* Three clearly different levels: category band, system, sub-system (with tree guide lines). */
+  #systems .row.d0 { background: var(--warm-slate); border-top: 1px solid var(--black); }
+  #systems .row.d0 .name { font-family: "Artifakt Legend", Arial, sans-serif; font-size: 15px; }
+  #systems .row.d0 .small { color: var(--black); }
+  #systems .row.d1 { background: linear-gradient(to right, transparent 18px, var(--slate-300) 18px, var(--slate-300) 20px, transparent 20px), var(--white); }
+  #systems .row.d2 { background: linear-gradient(to right, transparent 18px, var(--slate-300) 18px, var(--slate-300) 20px, transparent 20px,
+                     transparent 36px, var(--warm-slate) 36px, var(--warm-slate) 38px, transparent 38px), var(--white); }
+  #systems .row.d2 .name { font-size: 13px; font-weight: 600; }
+  #systems .row.d2 .name::before { content: "↳ "; color: var(--slate); }
+  #systems .row.sel { background: var(--black); }
+  #systems .row.sel .small { color: var(--warm-slate); }
   .small { color: var(--slate); font-size: 12px; overflow-wrap: anywhere; }
   .more { padding: 10px 14px; color: var(--slate); }
   .more button { background: none; border: 1px solid var(--black); border-radius: 4px; padding: 4px 12px; }
@@ -259,7 +267,7 @@ const DOC_TYPES = ["documentlineage", "documentversion"];
 const PAGE = 200;
 const assetsById = Object.fromEntries(D.assets.map(a => [a.id, a]));
 const assetsByName = new Map(D.assets.map(a => [a.name.toLowerCase(), a]));
-const state = { system: null, asset: null, node: null, phase: null, filter: "all", step: null, set: null, shown: PAGE };
+const state = { collapsed: false, system: null, asset: null, node: null, phase: null, filter: "all", step: null, set: null, shown: PAGE };
 let graphCache = {};
 
 const $ = id => document.getElementById(id);
@@ -329,7 +337,8 @@ function buildSystemTree() {
 }
 const systemsByPath = buildSystemTree();
 const selectedPath = () => (D.systems.find(x => x.id === state.system) || {}).path || "";
-const isOpen = s => selectedPath() === s.path || selectedPath().startsWith(s.path + SEP);
+// Open: on the selected branch, unless the selected node itself was clicked again (collapsed).
+const isOpen = s => selectedPath().startsWith(s.path + SEP) || (selectedPath() === s.path && !state.collapsed);
 const bySeverity = (a, b) => (ORDER[a.status] - ORDER[b.status]) || a.label.localeCompare(b.label);
 const realSystems = n => n.children.reduce((c, k) => c + (k.synthetic ? 0 : 1) + realSystems(k), 0);
 
@@ -354,7 +363,10 @@ function systemRow(s, depth, fullPath) {
     : `${plural(s.blockingCount, "blocking item")} · ${s.assetsNotReady} not ready of ${s.assetCount}`;
   const kids = s.isCategory ? plural(realSystems(s), "system") : plural(s.children.length, "sub-system");
   const toggle = s.children.length && !fullPath ? `<div class="small subs">${isOpen(s) ? "▾" : "▸"} ${kids}</div>` : "";
-  return `<div class="row ${s.isCategory ? "cat" : ""} ${state.system === s.id ? "sel" : ""}" data-id="${esc(s.id)}" tabindex="0" style="padding-left:${14 + depth * 18}px">
+  const level = fullPath ? "d1" : `d${Math.min(depth, 2)}`;
+  const open = isOpen(s) ? "open" : "";
+  return `<div class="row ${level} ${open} ${state.system === s.id ? "sel" : ""}" data-id="${esc(s.id)}" tabindex="0" style="padding-left:${14 + depth * 18 + (depth ? 10 : 0)}px"
+    title="${s.children.length ? "Click to select; click again to open or close" : ""}">
     <div class="name">${esc(fullPath ? s.path : s.label)}</div>${pill(s.status)}<div class="small">${esc(detail)}</div>${toggle}</div>`;
 }
 
@@ -735,7 +747,12 @@ function onViewerSelect(e) {
 
 /* ---------- selection ---------- */
 function selectSystem(id) {
-  Object.assign(state, { system: id, asset: null, node: null, step: null, set: null, phase: null, shown: PAGE });
+  if (id === state.system) {  // clicking the selected system again opens or closes its sub-systems
+    state.collapsed = !state.collapsed;
+    renderSystems();
+    return;
+  }
+  Object.assign(state, { collapsed: false, system: id, asset: null, node: null, step: null, set: null, phase: null, shown: PAGE });
   $("onlyLinked").checked = currentSystem().isUnassigned;
   $("assetSearch").value = ""; $("assetStatus").value = "";
   fillCategories(); renderAll();
