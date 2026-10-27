@@ -82,7 +82,7 @@ def lifecycle_sets(statuses, step_sets):
     return sets
 
 
-def normalise(raw, system_key, asset_system=None):
+def normalise(raw, system_key, asset_system=None, groups=None):
     """Build the system and asset records described in docs/05."""
     cats = category_paths(raw["categories"])
     statuses = {s["id"]: s for s in raw["statuses"]}
@@ -117,18 +117,18 @@ def normalise(raw, system_key, asset_system=None):
             "systemIds": [system] if system else [],
         })
     lifecycle = {sid: {"name": s["name"], "steps": s["steps"]} for sid, s in sets.items()}
-    return {"systems": build_systems(assets), "assets": assets, "skippedInactive": skipped_inactive,
+    return {"systems": build_systems(assets, groups), "assets": assets, "skippedInactive": skipped_inactive,
             "lifecycleSets": lifecycle}
 
 
-def build_systems(assets):
-    """Group assets by system name. System id = the attribute value itself."""
+def build_systems(assets, groups=None):
+    """Group assets by system name. System id = the attribute value itself. groups: system -> category."""
     members = {}
     for a in assets:
         for sid in a["systemIds"] or [NO_SYSTEM]:
             members.setdefault(sid, []).append(a["id"])
-    systems = [{"id": sid, "name": sid, "assetIds": ids, "isUnassigned": sid == NO_SYSTEM}
-               for sid, ids in members.items()]
+    systems = [{"id": sid, "name": sid, "assetIds": ids, "isUnassigned": sid == NO_SYSTEM,
+                "group": (groups or {}).get(sid, "")} for sid, ids in members.items()]
     # Real systems first, alphabetical; the unassigned bucket last.
     return sorted(systems, key=lambda s: (s["isUnassigned"], s["name"].lower()))
 
@@ -136,7 +136,7 @@ def build_systems(assets):
 def fetch():
     raw = fetch_raw()
     mode = config.SYSTEM_ATTRIBUTE.strip().lower()
-    asset_system = None
+    asset_system, groups = None, None
     if mode == CATEGORY:
         key = CATEGORY
     elif mode == DATACONNECTOR:
@@ -144,10 +144,11 @@ def fetch():
         path = config.snapshot_dir(config.snapshot_day()) / "systems.json"
         if not path.exists():
             raise SystemExit(f"{path} not found. Run py src/fetch/systems_dc.py first (refresh.ps1 does).")
-        asset_system = json.loads(path.read_text(encoding="utf-8"))["assetSystem"]
+        dc = json.loads(path.read_text(encoding="utf-8"))
+        asset_system, groups = dc["assetSystem"], dc.get("systemGroup")
     else:
         key = resolve_attribute_key(raw["custom_attributes"], config.SYSTEM_ATTRIBUTE)
-    result = normalise(raw, key, asset_system)
+    result = normalise(raw, key, asset_system, groups)
     result["systemAttribute"] = {"displayName": config.SYSTEM_ATTRIBUTE, "key": key}
     return result
 

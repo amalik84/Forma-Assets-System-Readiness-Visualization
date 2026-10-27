@@ -65,6 +65,10 @@
   .row.sel { background: var(--black); color: var(--white); border-left-color: var(--yellow); }
   .row.sel .small { color: var(--warm-slate); }
   .row .name { font-weight: 600; overflow-wrap: anywhere; }
+  .group-head { padding: 10px 14px 6px; background: var(--warm-slate-100); border-bottom: 1px solid var(--warm-slate);
+                display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; position: sticky; top: 0; z-index: 1; }
+  .group-head .name { font-family: "Artifakt Legend", Arial, sans-serif; font-weight: 700; font-size: 13px; }
+  #systems .row { padding-left: 24px; }
   .small { color: var(--slate); font-size: 12px; overflow-wrap: anywhere; }
   .more { padding: 10px 14px; color: var(--slate); }
   .more button { background: none; border: 1px solid var(--black); border-radius: 4px; padding: 4px 12px; }
@@ -283,13 +287,34 @@ function renderSystems() {
   const q = $("sysSearch").value.trim().toLowerCase();
   const list = D.systems.filter(s => !q || s.name.toLowerCase().includes(q))
     .sort((a, b) => (ORDER[a.status] - ORDER[b.status]) || a.name.localeCompare(b.name));
-  $("systems").innerHTML = list.map(s => {
+  // Forma system categories (Data Connector) become group headers with a combined status.
+  const groups = [...new Set(list.map(s => s.group || ""))];
+  const grouped = groups.length > 1 || groups[0] !== "";
+  const header = g => {
+    const members = list.filter(s => (s.group || "") === g);
+    const worst = members.map(s => s.status).sort((a, b) => ORDER[a] - ORDER[b])[0];
+    const notReady = members.filter(s => s.status === "not_ready").length;
+    return `<div class="group-head"><div><div class="name">${esc(g || "Other systems")}</div>
+      <div class="small">${plural(members.length, "system")}${notReady ? ` · ${notReady} not ready` : ""}</div></div>${pill(worst)}</div>`;
+  };
+  const order = g => Math.min(...list.filter(s => (s.group || "") === g).map(s => ORDER[s.status]));
+  if (grouped) {
+    $("systems").innerHTML = groups.sort((a, b) => (!a) - (!b) || order(a) - order(b) || a.localeCompare(b))
+      .map(g => header(g) + list.filter(s => (s.group || "") === g).map(systemRow).join("")).join("")
+      || `<div class="empty">No systems match.</div>`;
+    return;
+  }
+  $("systems").innerHTML = list.map(systemRow).join("") || `<div class="empty">No systems match.</div>`;
+}
+
+function systemRow(s) {
+  {
     const linkNote = s.assetsWithReferences === 0 ? " · no links at all" : ` · ${fmt(s.assetsWithReferences)} with links`;
     const detail = s.status === "ready" || s.status === "unassigned" ? plural(s.assetCount, "asset") + linkNote
       : `${plural(s.blockingCount, "blocking item")} · ${s.assetsNotReady} not ready of ${s.assetCount}`;
     return `<div class="row ${state.system === s.id ? "sel" : ""}" data-id="${esc(s.id)}" tabindex="0">
       <div class="name">${esc(s.name)}</div>${pill(s.status)}<div class="small">${esc(detail)}</div></div>`;
-  }).join("") || `<div class="empty">No systems match.</div>`;
+  }
 }
 
 const currentSystem = () => D.systems.find(x => x.id === state.system);

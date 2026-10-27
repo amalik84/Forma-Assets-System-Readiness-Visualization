@@ -28,7 +28,7 @@ import aps_client  # noqa: E402
 import config  # noqa: E402
 from fetch.common import save  # noqa: E402
 
-FILES = ("assets_systems.csv", "assets_system_memberships.csv")
+FILES = ("assets_systems.csv", "assets_system_memberships.csv", "assets_categories.csv")  # small tables only
 DESCRIPTION = "forma-system-readiness: systems for project {}"
 STATE_DIR = config.ROOT / "data" / "dc"
 
@@ -148,8 +148,8 @@ def rows(text):
 
 # ---------- systems ----------
 
-def build(systems_rows, membership_rows, project_id):
-    """Asset id -> system path ('Parent > Child'), for live systems of this project only."""
+def build(systems_rows, membership_rows, project_id, category_rows=()):
+    """Asset id -> system path ('Parent > Child'), and system path -> its Forma system category."""
     systems = {r["id"]: r["name"].strip() for r in systems_rows
                if _bare(r.get("bim360_project_id")) == project_id and not r.get("deleted_at")}
     parent, asset_system = {}, {}
@@ -170,8 +170,21 @@ def build(systems_rows, membership_rows, project_id):
             sid = parent.get(sid)
         return " > ".join(reversed(names))
 
+    # System categories (Assets > Systems, left panel) resolve through assets_categories.uid.
+    cat_names = {r.get("uid"): r.get("name", "").strip() for r in category_rows
+                 if _bare(r.get("bim360_project_id")) == project_id and r.get("uid")}
+    raw = {r["id"]: r for r in systems_rows}
+
+    def group(sid):
+        root, seen = sid, set()  # nested systems take the category of their top-level system when they have none
+        while not cat_names.get(raw[sid].get("category_uid")) and parent.get(sid) and sid not in seen:
+            seen.add(sid)
+            sid = parent[sid]
+        return cat_names.get(raw[sid].get("category_uid")) or cat_names.get(raw[root].get("category_uid")) or ""
+
     return {"assetSystem": {a: path(s) for a, s in asset_system.items()},
-            "systems": sorted(path(s) for s in systems), "nested": len(parent)}
+            "systems": sorted(path(s) for s in systems), "nested": len(parent),
+            "systemGroup": {path(s): group(s) for s in systems}}
 
 
 def fetch():
@@ -201,11 +214,11 @@ def fetch():
         print("  waiting for the Data Connector job to finish...")
         time.sleep(30)
 
-    if job and job["id"] == state.get("jobId") and state.get("result"):
+    if job and job["id"] == state.get("jobId") and "systemGroup" in (state.get("result") or {}):
         result = state["result"]  # already downloaded this job
     elif job:
         texts = {name: download(job["id"], name) for name in FILES}
-        result = build(rows(texts[FILES[0]]), rows(texts[FILES[1]]), config.PROJECT_ID)
+        result = build(rows(texts[FILES[0]]), rows(texts[FILES[1]]), config.PROJECT_ID, rows(texts[FILES[2]]))
         result["extractedAt"] = job.get("completedAt")
         state.update(jobId=job["id"], result=result)
         _save_state(state)

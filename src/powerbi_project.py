@@ -45,7 +45,7 @@ TABLES = {
         ("Readiness", *T, {"sortByColumn": "ReadinessOrder"}), ("ReadinessOrder", *I, HIDDEN),
         ("IsUnassigned", *B, HIDDEN), ("Assets", *I, {}), ("AssetsWithLinks", *I, {"name": "Assets with links"}),
         ("AssetsNotReady", *I, {"name": "Not ready"}), ("AssetsUnknown", *I, {"name": "Unknown"}),
-        ("BlockingItems", *I, {"name": "Blocking"})]),
+        ("BlockingItems", *I, {"name": "Blocking"}), ("SystemGroup", *T, {"name": "System category"})]),
     "Assets": ("assets.csv", [
         ("AssetId", *T, HIDDEN), ("Asset", *T, {}), ("SystemId", *T, HIDDEN), ("Category", *T, {}),
         ("Barcode", *T, {}), ("AssetStatus", *T, {"name": "Forma status"}), ("Status", *T, HIDDEN),
@@ -344,7 +344,7 @@ def pages():
     overview = header() + [kpi(f"kpi{i}", 16 + i * (tile_w + 8), tile_w, t, m) for i, (t, m) in enumerate(tiles)]
     overview += [
         visual("sysTable", "tableEx", 16, 180, 772, 524, {"Values": [
-            field(S, "System"), field(S, "Readiness"), field(S, "Assets"), field(S, "Assets with links"),
+            field(S, "System category"), field(S, "System"), field(S, "Readiness"), field(S, "Assets"), field(S, "Assets with links"),
             field(S, "Not ready"), field(S, "Unknown"), field(S, "Blocking")]},
             "Systems, not ready first", (field(S, "Readiness"), 1), objects=status_fill(S, "Readiness", "System colour")),
         visual("sysBar", "clusteredBarChart", 796, 180, 468, 524, {

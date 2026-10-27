@@ -58,7 +58,7 @@ def build_data(readiness, user=None, models=None):
             "references": [slim_reference(r) for r in refs],
         })
     systems = [{k: s[k] for k in ("id", "name", "status", "assetIds", "isUnassigned", "assetCount",
-                                  "assetsNotReady", "assetsUnknown", "assetsWithReferences", "blockingCount")}
+                                  "assetsNotReady", "assetsUnknown", "assetsWithReferences", "blockingCount")} | {"group": s.get("group", "")}
                for s in readiness["systems"]]
     meta = dict(readiness["meta"])
     generated = datetime.fromisoformat(meta["generatedAt"]).astimezone()

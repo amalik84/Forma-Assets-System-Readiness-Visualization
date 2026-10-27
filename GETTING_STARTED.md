@@ -78,7 +78,7 @@ SYSTEM_ATTRIBUTE=category
 SYSTEM_ATTRIBUTE=dataconnector
 APS_SCOPES=data:read data:write data:create
 ```
-Then log in again (`py src\auth.py login`, needed for the new scopes). Your Forma role must be allowed to use the Data Connector (account admin, or project admin for this project). The first `.\refresh.ps1` creates one small daily Data Connector request (assets only, this project) and waits for its first run, which can take some minutes. After that each refresh just downloads the latest two system files, so it stays fast. Nested systems show as "Parent > Child".
+Then log in again (`py src\auth.py login`, needed for the new scopes). Your Forma role must be allowed to use the Data Connector (account admin, or project admin for this project). The first `.\refresh.ps1` creates one small daily Data Connector request (assets only, this project) and waits for its first run, which can take some minutes. After that each refresh just downloads the latest two system files, so it stays fast. Systems are grouped under their Forma system category (the left panel of Assets > Systems), each with a combined status; nested systems show as "Parent > Child".
 
 ## 5. First refresh
 

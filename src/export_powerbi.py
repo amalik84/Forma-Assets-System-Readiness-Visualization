@@ -39,7 +39,7 @@ def tables(data):
     phases = {p["id"]: (p["label"], i + 1) for i, p in enumerate(data["phases"])}
     systems = [[s["id"], s["name"], s["status"], READINESS_LABELS.get(s["status"], s["status"]),
                 READINESS_ORDER.get(s["status"], 9), str(s["isUnassigned"]).lower(), s["assetCount"],
-                s["assetsWithReferences"], s["assetsNotReady"], s["assetsUnknown"], s["blockingCount"]]
+                s["assetsWithReferences"], s["assetsNotReady"], s["assetsUnknown"], s["blockingCount"], s.get("group") or ""]
                for s in data["systems"]]
     assets, refs = [], []
     for a in data["assets"]:
@@ -61,7 +61,7 @@ def tables(data):
              m.get("issueDoneStatuses") or "", m.get("formDoneStatuses") or "", m.get("systemAttribute") or ""]]
     return {
         "systems": (["SystemId", "System", "Status", "Readiness", "ReadinessOrder", "IsUnassigned", "Assets",
-                     "AssetsWithLinks", "AssetsNotReady", "AssetsUnknown", "BlockingItems"], systems),
+                     "AssetsWithLinks", "AssetsNotReady", "AssetsUnknown", "BlockingItems", "SystemGroup"], systems),
         "assets": (["AssetId", "Asset", "SystemId", "Category", "Barcode", "AssetStatus", "Status", "Readiness",
                     "ReadinessOrder", "BlockingCount", "UnknownCount", "ReferenceCount", "LifecycleKey", "FormaUrl"], assets),
         "references": (["AssetId", "ItemKey", "ItemType", "Item", "State", "StateLabel", "Phase", "PhaseOrder",

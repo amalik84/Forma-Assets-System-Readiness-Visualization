@@ -30,6 +30,13 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(r["nested"], 1)
         self.assertNotIn("Old", r["systems"])
 
+    def test_system_categories_and_nested_inherit(self):
+        systems = [dict(system("S1", "Substation"), category_uid="c1"), dict(system("S2", "Section 2"), category_uid="")]
+        cats = [{"uid": "c1", "name": "Transmission substation", "bim360_project_id": P}]
+        r = systems_dc.build(systems, [member("S1", "system", "S2"), member("S2", "asset", "A2")], P, cats)
+        self.assertEqual(r["systemGroup"], {"Substation": "Transmission substation",
+                                            "Substation > Section 2": "Transmission substation"})
+
     def test_other_projects_and_b_prefix(self):
         r = systems_dc.build([system("S1", "X", project="b." + P), system("S9", "Y", project="other")],
                              [member("S1", "asset", "A1", project="b." + P), member("S9", "asset", "A9", project="other")], P)
