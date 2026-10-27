@@ -7,6 +7,7 @@ Usage (from the project folder): py src/fetch/assets.py
 Writes data/raw/<projectId>/YYYY-MM-DD/assets.json and prints counts to compare with Forma.
 """
 
+import json
 import sys
 from collections import Counter
 from pathlib import Path
@@ -19,6 +20,7 @@ from fetch.common import save  # noqa: E402
 
 NO_SYSTEM = "(no system)"
 CATEGORY = "category"  # SYSTEM_ATTRIBUTE=category: group by top-level asset category instead
+DATACONNECTOR = "dataconnector"  # SYSTEM_ATTRIBUTE=dataconnector: Forma Systems, see fetch/systems_dc.py
 
 
 def _base():
@@ -80,7 +82,7 @@ def lifecycle_sets(statuses, step_sets):
     return sets
 
 
-def normalise(raw, system_key):
+def normalise(raw, system_key, asset_system=None):
     """Build the system and asset records described in docs/05."""
     cats = category_paths(raw["categories"])
     statuses = {s["id"]: s for s in raw["statuses"]}
@@ -94,6 +96,8 @@ def normalise(raw, system_key):
         category = cats.get(str(a.get("categoryId")), "")
         if system_key == CATEGORY:
             system = category.split(" > ")[0].strip()
+        elif system_key == DATACONNECTOR:
+            system = (asset_system or {}).get(a["id"], "")
         else:
             system = ((a.get("customAttributes") or {}).get(system_key) or "").strip()
         status = statuses.get(a.get("statusId"), {})
@@ -131,11 +135,19 @@ def build_systems(assets):
 
 def fetch():
     raw = fetch_raw()
-    if config.SYSTEM_ATTRIBUTE.strip().lower() == CATEGORY:
+    mode = config.SYSTEM_ATTRIBUTE.strip().lower()
+    asset_system = None
+    if mode == CATEGORY:
         key = CATEGORY
+    elif mode == DATACONNECTOR:
+        key = DATACONNECTOR
+        path = config.snapshot_dir(config.snapshot_day()) / "systems.json"
+        if not path.exists():
+            raise SystemExit(f"{path} not found. Run py src/fetch/systems_dc.py first (refresh.ps1 does).")
+        asset_system = json.loads(path.read_text(encoding="utf-8"))["assetSystem"]
     else:
         key = resolve_attribute_key(raw["custom_attributes"], config.SYSTEM_ATTRIBUTE)
-    result = normalise(raw, key)
+    result = normalise(raw, key, asset_system)
     result["systemAttribute"] = {"displayName": config.SYSTEM_ATTRIBUTE, "key": key}
     return result
 

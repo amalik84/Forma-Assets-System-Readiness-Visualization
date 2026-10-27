@@ -17,6 +17,7 @@
 | 2026-10-21 | Active project switched to **Demo project B** (`<id>`, account `<id>`). Demo project A snapshot kept under its project id. | Set in `.env` |
 | 2026-10-21 | Demo project B: systems = top-level asset category (`SYSTEM_ATTRIBUTE=category`), 7 systems covering all 688 assets | Agreed by the project owner. No System Classification attribute; Route / Line Name covered only 266 assets. |
 | 2026-10-21 | Demo project B viewer models: MN_GC_0001.rvt (Tunnel 307 of 334) + RidgeGate_Station_SITE.dwg (Light Poles 29 of 29) | 20 referenced models tested in the viewer; only these two match asset names. |
+| 2026-10-27 | Forma Systems through the Data Connector, lean: one daily request with only the `assets` service group for this project, download only the two system files; everything else stays on the live APIs | Assets API has no Systems endpoint (404); Data Connector exports systems and memberships with matching asset ids. Agreed by the project owner. |
 | 2026-10-21 | Join on IDs from Relationships | Relationship entity IDs match Issues API IDs (18/18) and Forms API IDs (16/19) |
 | 2026-10-21 | Hub and project set in .env | Hub `<id>`, project `<id>` (stored without `b.`) |
 

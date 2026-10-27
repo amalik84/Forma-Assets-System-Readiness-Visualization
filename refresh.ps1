@@ -10,7 +10,11 @@ $ErrorActionPreference = "Continue"
 # One date for the whole run, so a refresh that crosses midnight keeps its files in one folder.
 $env:SNAPSHOT_DAY = (Get-Date).ToString("yyyy-MM-dd")
 
-$steps = @(
+# Forma Systems come from the Data Connector only when SYSTEM_ATTRIBUTE=dataconnector (see .env).
+$systemsStep = @()
+if ((Get-Content .env -ErrorAction SilentlyContinue) -match '^\s*SYSTEM_ATTRIBUTE\s*=\s*dataconnector\s*$') { $systemsStep = @("src\fetch\systems_dc.py") }
+
+$steps = $systemsStep + @(
     "src\fetch\assets.py",
     "src\fetch\issues.py",
     "src\fetch\forms.py",

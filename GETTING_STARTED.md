@@ -73,6 +73,13 @@ SYSTEM_ATTRIBUTE=category
 ```
 `category` (the top-level asset category) always works. A custom attribute is better if your project has a real "System" field. Agree with your team what "system" should mean.
 
+**Your project uses Forma Systems (Assets > Systems tab)?** Use those instead: the regular API does not offer them, but the Data Connector does.
+```
+SYSTEM_ATTRIBUTE=dataconnector
+APS_SCOPES=data:read data:write data:create
+```
+Then log in again (`py src\auth.py login`, needed for the new scopes). Your Forma role must be allowed to use the Data Connector (account admin, or project admin for this project). The first `.\refresh.ps1` creates one small daily Data Connector request (assets only, this project) and waits for its first run, which can take some minutes. After that each refresh just downloads the latest two system files, so it stays fast. Nested systems show as "Parent > Child".
+
 ## 5. First refresh
 
 ```powershell
